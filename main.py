@@ -1,6 +1,23 @@
 from melody import *
 from note import *
 import random
+from kivy.app import App
+from kivy.uix.widget import Widget
+from kivy.lang import Builder
+
+
+Builder.load_file('main.kv')
+
+
+class MyLayout(Widget):
+    def spinner_clicked(self, value):
+        self.ids.click_label.text = value
+
+
+class MainApp(App):
+    def build(self):
+        return MyLayout()
+
 
 def main():
     # Major Chord Melody
@@ -22,5 +39,6 @@ def main():
     m.generateMIDI()
     m.saveMelodyAs('out.mid')
 
+
 if __name__ == '__main__':
-    main()
+    MainApp().run()
