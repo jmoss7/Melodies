@@ -1,5 +1,6 @@
 from melody import *
 from note import *
+from generate import *
 import random
 from kivy.app import App
 from kivy.uix.widget import Widget
@@ -32,25 +33,61 @@ keys_4 = {
 
 
 class MyLayout(Widget):
-    def spinner_clicked(self, value):
-        self.ids.click_label.text = f'{value}'
+    def update_label(self, input_id, value):
+        if input_id == "spinner_key_id":
+            self.ids.key_label.text = "Key: " + value
+        elif input_id == "spinner_scale_id":
+            self.ids.scale_label.text = "Scale: " + value
+        elif input_id == "spinner_octave_id":
+            self.ids.octave_label.text = "Octave: " + value
+        elif input_id == "input_numnotes_id":
+            self.ids.numnotes_label.text = "Num Notes: " + value
+        else:
+            print("you suck")
 
-    def main(self, key):
+    def main(self, key, scale, octave, num_notes):
         # Major Chord Melody
         # start = random.randint(12, 92) + 12  # To make it easy to hear
-        start = keys_4[key]
-        instrument = random.randint(0, 127)  # Any random instrument
-        note1 = Note(start, QUARTER_NOTE)  # Base of chord
-        note2 = Note(start + 4, QUARTER_NOTE)
-        note3 = Note(start + 7, QUARTER_NOTE)
-        note4 = note1.duplicate()
-        note4.incrementOctave(1)
+        # start = keys_4[key]
+        # instrument = random.randint(0, 127)  # Any random instrument
+        # note1 = Note(start, QUARTER_NOTE)  # Base of chord
+        # note2 = Note(start + 4, QUARTER_NOTE)
+        # note3 = Note(start + 7, QUARTER_NOTE)
+        # note4 = note1.duplicate()
+        # note4.incrementOctave(1)
+        #
+        # m = Melody([], instrument=instrument, bpm=100)
+        # m.addNote(note1)
+        # m.addNote(note2)
+        # m.addNote(note3)
+        # m.addNote(note4)
+        # print(m)
+        #
+        # m.generateMIDI()
+        # m.saveMelodyAs('out.mid')
 
+        instrument = random.randint(0, 127)
         m = Melody([], instrument=instrument, bpm=100)
-        m.addNote(note1)
-        m.addNote(note2)
-        m.addNote(note3)
-        m.addNote(note4)
+
+        scale = scale.lower()
+        octave = int(octave)
+        num_notes = int(num_notes)
+        # generate scale (a list of notes to be used in melody)
+        scale1 = getScale(key, scale, octave)
+        print("Generated %s%d %s scale." % (key, octave, scale))
+        print(scale1)
+
+        # randomize notes in scale by choosing {num_notes} random notes
+        mel = []
+        for i in range(num_notes):
+            mel.append(random.choice(scale1))
+
+        # add the random notes to generate the melody
+        for note in mel:
+            curnote = Note(note, QUARTER_NOTE)
+            m.addNote(curnote)
+
+        print("Random melody generated.")
         print(m)
 
         m.generateMIDI()
@@ -60,9 +97,6 @@ class MyLayout(Widget):
 class MainApp(App):
     def build(self):
         return MyLayout()
-
-
-
 
 
 if __name__ == '__main__':
