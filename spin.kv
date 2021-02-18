@@ -1,0 +1,22 @@
+<MyLayout>
+    BoxLayout:
+        orientation: "vertical"
+        size: root.width, root.height
+        Label:
+            id: click_label
+            text: "Key"
+            font_size: 32
+
+        Spinner:
+            id: spinner_id
+            text: "Key"
+            values: ["C", "C#", "Db", "D", "D#", "Eb", "E", "F", "F#", "Gb", "G", "G#", "Ab", "A", "A#", "Bb", "B"]
+            on_text: root.spinner_clicked(spinner_id.text)
+
+        Label:
+            text: ''
+
+        Button:
+            text: 'Generate Chord'
+            on_press: root.main(spinner_id.text)
+            on_release: print("Chord MIDI file written to out.mid!")
