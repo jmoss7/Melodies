@@ -1,4 +1,5 @@
 from mido import MidiFile, MidiTrack, Message, MetaMessage, bpm2tempo
+from instruments import *
 
 # Macros
 TICKS_PER_BEAT = 480  # Best if large and divisible by SMALLEST_NOTE (beat=1/4)
@@ -34,7 +35,7 @@ class Melody:
             return "Empty Melody"
 
         header = "------------------------\n"
-        header += "Instrument: {}\n".format(self.instrument)
+        header += "Instrument: {}\n".format(getInstrument(self.instrument))
         header += "------------------------\n"
         header += "Note | Length | Velocity\n------------------------\n"
 
@@ -78,7 +79,7 @@ class Melody:
         self.sequence.pop(idx)
 
     def generateMIDI(self):
-        self.file.ticks_per_beat = TICKS_PER_BEAT  # Typical high number for ticks/beat
+        self.file.ticks_per_beat = TICKS_PER_BEAT
         track = MidiTrack()
         self.file.tracks.append(track)
 
@@ -93,19 +94,11 @@ class Melody:
                                  note=self.sequence[i].getMidiNumber(),
                                  velocity=self.sequence[i].getVelocity(),
                                  time=0))
-            noteLen -= TICKS_PER_BEAT
-
-            while noteLen > 0:  # For each quarter note worth of note
-                track.append(Message('note_on',
-                                     note=self.sequence[i].getMidiNumber(),
-                                     velocity=self.sequence[i].getVelocity(),
-                                     time=min(noteLen, TICKS_PER_BEAT)))
-                noteLen -= TICKS_PER_BEAT  # Remove quarter note worth of length
 
             track.append(Message('note_off',
                                  note=self.sequence[i].getMidiNumber(),
                                  velocity=64,
-                                 time=noteLen+TICKS_PER_BEAT))
+                                 time=noteLen))
 
     def saveMelodyAs(self, name):
         self.file.save(name)

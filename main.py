@@ -1,5 +1,6 @@
 from melody import *
 from note import *
+from play import *
 from generate import *
 import random
 from kivy.app import App
@@ -55,14 +56,14 @@ class MyLayout(Widget):
         # note3 = Note(start + 7, QUARTER_NOTE)
         # note4 = note1.duplicate()
         # note4.incrementOctave(1)
-        #
+
         # m = Melody([], instrument=instrument, bpm=100)
         # m.addNote(note1)
         # m.addNote(note2)
         # m.addNote(note3)
         # m.addNote(note4)
         # print(m)
-        #
+
         # m.generateMIDI()
         # m.saveMelodyAs('out.mid')
 
@@ -92,6 +93,9 @@ class MyLayout(Widget):
 
         m.generateMIDI()
         m.saveMelodyAs('out.mid')
+
+        midiToWAV("out.mid")
+        playWAV("temp.wav")
 
 
 class MainApp(App):
