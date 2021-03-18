@@ -86,7 +86,7 @@ class MyLayout(Widget):
         bars = 4
 
         # randomize length of each notes using getRandomStructure function
-        lengths = structures.getRandomStructure(bars, num_notes)
+        lengths = structures.getEqualNoteStructure(bars, num_notes)
 
         # add the random notes to generate the melody
         for i in range(num_notes):
@@ -99,8 +99,8 @@ class MyLayout(Widget):
         m.generateMIDI()
         m.saveMelodyAs('out.mid')
 
-        playMIDI("out.mid")
-        # midiToWAV("out.mid", "temp.wav")
+        midiToWAV("out.mid", "temp.wav")
+        playWAVkivy("temp.wav")
 
 class MainApp(App):
     def build(self):

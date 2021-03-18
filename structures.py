@@ -58,3 +58,30 @@ def getRandomStructure(numBars, numNotes):
             structure.append(length)
 
     return structure
+
+def getEqualNoteStructure(numBars, numNotes):
+    """ Returns an array of integers of length 'numNotes' where each integer
+        is (roughly) equal length and the notes (when played) spans over
+        'numBars' worth of music """
+
+    if numNotes > (numBars * melody.SMALLEST_NOTE):
+        "Should be error, but for now..."
+        return []
+
+    # Array of note lengths in units of SMALLEST_NOTE notes
+    structure = []
+
+    # Amount of notes of size SMALLEST_NOTE left to be filled in the melody
+    roomLeft = numBars * melody.SMALLEST_NOTE
+
+    # The length of each note so that each note is roughly the same length
+    equalLen = (numBars * melody.SMALLEST_NOTE) // numNotes
+
+    for n in range(numNotes):
+        if n == (numNotes-1):
+            structure.append(roomLeft)
+        else:
+            roomLeft -= equalLen
+            structure.append(equalLen)
+
+    return structure
