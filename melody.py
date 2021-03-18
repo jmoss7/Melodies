@@ -3,7 +3,7 @@ from instruments import *
 
 # Macros
 TICKS_PER_BEAT = 480  # Best if large and divisible by SMALLEST_NOTE (beat=1/4)
-SMALLEST_NOTE = 32  # 1/32 note is smallest note possible for melody
+SMALLEST_NOTE = 32  # 1/32 note is smallest note possible for Melodies
 
 # Length of each Note (out of 1/32th note)
 THIRTY_SECOND_NOTE = 1
@@ -13,9 +13,17 @@ QUARTER_NOTE = 8
 HALF_NOTE = 16
 WHOLE_NOTE = 32
 
+# Dotted notes are length of regular note plus length of half of the note
+DOTTED_SIXTEENTH_NOTE = SIXTEENTH_NOTE + THIRTY_SECOND_NOTE
+DOTTED_EIGHTH_NOTE = EIGHTH_NOTE + SIXTEENTH_NOTE
+DOTTED_QUARTER_NOTE = QUARTER_NOTE + EIGHTH_NOTE
+DOTTED_HALF_NOTE = HALF_NOTE + QUARTER_NOTE
+DOTTED_WHOLE_NOTE = WHOLE_NOTE + HALF_NOTE
+
 class Melody:
-    def __init__(self, contents, instrument=12, bpm=120, time_sig=(4, 4)):
-        if not contents:
+    def __init__(self, contents, instrument=0, bpm=120, scale="major",
+                 time_sig=(4, 4), key_sig="C"):
+        if not contents or not isinstance(contents, list):
             self.sequence = []
         else:
             self.sequence = contents
@@ -24,7 +32,9 @@ class Melody:
         self.numNotes = len(contents)
         self.instrument = instrument
         self.bpm = bpm
+        self.scale = scale
         self.timeSig = time_sig
+        self.keySig = key_sig
         self.file = MidiFile()
 
     def __len__(self):
@@ -62,11 +72,14 @@ class Melody:
     def getMusicalNotes(self):
         return [x for x in self.sequence if x.getVelocity() != 0]
 
-    def getKeySignature(self):
-        pass  # Whoever does this is a legend
+    def getScale(self):
+        return self.scale
 
-    def getScales(self):
-        pass  # Whoever does this is also a legend
+    def getKeySignature(self):
+        return self.keySig
+
+    def getTimeSignature(self):
+        return self.timeSig
 
     def addNote(self, n):
         self.sequence.append(n)

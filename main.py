@@ -1,7 +1,6 @@
-from melody import *
-from note import *
 from play import *
 from generate import *
+import structures
 import random
 from kivy.app import App
 from kivy.uix.widget import Widget
@@ -74,7 +73,7 @@ class MyLayout(Widget):
         octave = int(octave)
         num_notes = int(num_notes)
         # generate scale (a list of notes to be used in melody)
-        scale1 = getScale(key, scale, octave)
+        scale1 = generate_scale(key, scale, octave)
         print("Generated %s%d %s scale." % (key, octave, scale))
         print(scale1)
 
@@ -83,9 +82,15 @@ class MyLayout(Widget):
         for i in range(num_notes):
             mel.append(random.choice(scale1))
 
+        # To be an input later on...the number of measures/bars in melody
+        bars = 4
+
+        # randomize length of each notes using getRandomStructure function
+        lengths = structures.getEqualNoteStructure(bars, num_notes)
+
         # add the random notes to generate the melody
-        for note in mel:
-            curnote = Note(note, QUARTER_NOTE)
+        for i in range(num_notes):
+            curnote = Note(mel[i], lengths[i])#, vel=random.randint(1, 127))
             m.addNote(curnote)
 
         print("Random melody generated.")
@@ -94,9 +99,8 @@ class MyLayout(Widget):
         m.generateMIDI()
         m.saveMelodyAs('out.mid')
 
-        midiToWAV("out.mid")
-        playWAV("temp.wav")
-
+        midiToWAV("out.mid", "temp.wav")
+        playWAVkivy("temp.wav")
 
 class MainApp(App):
     def build(self):
