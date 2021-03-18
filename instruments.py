@@ -144,8 +144,6 @@ def getAllInstruments(sortByLetter=False):
     if sortByLetter:
         return sorted(instruments)
 
-    return instruments
-
 def getNonPercussionInstruments(includeSynthEffects=True):
     """ Returns the list of non-percussion instrument names available
         (Note: If the user does not want to include synth effects, the
@@ -189,7 +187,6 @@ def getInstrumentsofType(category):
 def getRandomInstrument():
     """ Returns the number of any random instrument out of the 128 possible
         instruments """
-
     return instruments[random.randint(0, 127)]
 
 def getRandomInstrumentFromType(category):

@@ -60,7 +60,6 @@ def generate_scale(key, scale, octave):
 		out.append(keys_0[key] + (12 * octave) + scales[scale][i])
 	return out
 
-
 # generate major chord melody
 def generate_major(key):
 	# Major Chord Melody
@@ -80,7 +79,6 @@ def generate_major(key):
 	print(m)
 
 	return m
-
 
 # generate minor chord melody
 def generate_minor(key):
