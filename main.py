@@ -102,16 +102,22 @@ class MyLayout(Widget):
             self.ids.octave_label.text = "Octave: " + value
         elif input_id == "input_numnotes_id":
             self.ids.numnotes_label.text = "Num Notes: " + value
+        elif input_id == "input_bars_id":
+            self.ids.bars_label.text = "Num Bars: " + value
         else:
             print("you suck")
 
-    def main(self, key, scale, octave, num_notes):
+    def save_melody(self):
+        return
+
+    def main(self, key, scale, octave, num_notes, num_bars):
         instrument = random.choice(getNonPercussionInstruments(includeSynthEffects=False))
         m = Melody([], instrument=getMIDINumber(instrument), bpm=100)
 
         scale = scale.lower()
         octave = int(octave)
         num_notes = int(num_notes)
+        bars = int(num_bars)
         # generate scale (a list of notes to be used in melody)
         scale1 = generate_scale(key, scale, octave)
         print("Generated %s%d %s scale." % (key, octave, scale))

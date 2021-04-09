@@ -3,6 +3,7 @@ from instruments import getInstrument as getInstrumentName
 from general import *
 import generate
 from note import Note
+from typing import Tuple, List
 
 # Below are the indices in a track that specific messages will appear
 INSTRUMENT_MSG_IDX = 0  # Should always be first message in track
@@ -13,9 +14,9 @@ FIRST_NOTE_MSG_IDX = 4  # Should always be +1 of last setup message
 
 class Melody:
     # Dunder methods (__method__)
-    def __init__(self, contents: list[Note], instrument: int = 0,
+    def __init__(self, contents: List[int], instrument: int = 0,
                  bpm: int = 120, scale: str = "major", octave: int = 4,
-                 time_sig: (int, int) = (4, 4), key_sig: str = "C"):
+                 time_sig: Tuple[int, int] = (4, 4), key_sig: str = "C"):
         """ Constructs a Melody object, which contains the characteristics
             of a melody and its MIDI file """
 
