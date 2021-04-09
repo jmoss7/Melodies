@@ -118,17 +118,17 @@ categories = {"piano": [0, 1, 2, 3, 4, 5, 6, 7],
               "percussive": [112, 113, 114, 115, 116, 117, 118, 119],
               "sound effects": [120, 121, 122, 123, 124, 125, 126, 127]}
 
-def getInstrument(nbr):
+def getInstrument(nbr: int):
     """ Returns the instrument name of the MIDI # given """
 
     return instruments[nbr]
 
-def getMIDINumber(instrument):
+def getMIDINumber(instrument: str):
     """ Returns the MIDI number of the instrument name given"""
 
     return instrumentToMIDI[instrument.lower()]
 
-def getInstrumentTypes(sortByLetter=False):
+def getInstrumentTypes(sortByLetter: bool = False):
     """ Returns the list of categories(types) of instruments available """
 
     cats = list(categories.keys())
@@ -138,13 +138,15 @@ def getInstrumentTypes(sortByLetter=False):
 
     return cats
 
-def getAllInstruments(sortByLetter=False):
+def getAllInstruments(sortByLetter: bool = False):
     """ Returns the list of all the instrument names available"""
 
     if sortByLetter:
         return sorted(instruments)
 
-def getNonPercussionInstruments(includeSynthEffects=True):
+    return instruments
+
+def getNonPercussionInstruments(includeSynthEffects: bool = True):
     """ Returns the list of non-percussion instrument names available
         (Note: If the user does not want to include synth effects, the
         optional paramater 'includeSynthEffects' should be set to False
@@ -173,7 +175,7 @@ def getCategoryFromInstrument(instrument):
             "synth pad", "synth effects", "ethnic", "percussive",
             "sound effects"][(val // 8)]
 
-def getInstrumentsofType(category):
+def getInstrumentsofType(category: str):
     """ Returns the list of instruments that fall under the category given
         by the parameter 'category'. If category does not exist, return empty
         list """
@@ -187,9 +189,10 @@ def getInstrumentsofType(category):
 def getRandomInstrument():
     """ Returns the number of any random instrument out of the 128 possible
         instruments """
+
     return instruments[random.randint(0, 127)]
 
-def getRandomInstrumentFromType(category):
+def getRandomInstrumentFromType(category: str):
     """ Returns the number of a random instrument that falls under the category
         given by the parameter 'category'. If category does not exist, return
         0 (Acoustic Grand Piano) """

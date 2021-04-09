@@ -12,7 +12,7 @@ possibleNotes = ([melody.THIRTY_SECOND_NOTE] +  # 1% Chance for 1/32th Note
                 ([melody.HALF_NOTE] * 23) +  # 23% Chance for 1/2th Note
                 ([melody.WHOLE_NOTE] * 11))  # 11% Chance for Whole Note
 
-def getRandomStructure(numBars, numNotes):
+def getRandomStructure(numBars: int, numNotes: int):
     """ Returns a random array of integers of length 'numNotes' that spans over
         'numBars' worth of music. In other words, the length of the returned
         array is numNotes and the sum of the returned array is numBars *
@@ -59,7 +59,7 @@ def getRandomStructure(numBars, numNotes):
 
     return structure
 
-def getEqualNoteStructure(numBars, numNotes):
+def getEqualNoteStructure(numBars: int, numNotes: int):
     """ Returns an array of integers of length 'numNotes' where each integer
         is (roughly) equal length and the notes (when played) spans over
         'numBars' worth of music """
