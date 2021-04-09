@@ -1,36 +1,96 @@
 from play import *
 from generate import *
+from instruments import *
 import structures
 import random
+from melodystack import MelodyStack
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.lang import Builder
 from kivy.uix.button import Button
 
+"""def melodyStackBeta():
+    ms = MelodyStack()
+
+    options = "\nMelodies (Melody Stack Beta on Terminal Version)\n"
+    options += "------------------------\n"
+    options += "1. Play\n2. Add Melody\n3. Remove Melody\n4. Swap Melodies\n"
+    options += "5. Print Melody Stack\n6. Set Key Signature\n7. Set Scale\n"
+    options += "8. Loop Track\n9. Exit\n"
+
+    print(options)
+    nbr = input("Choose a number: ").strip()
+
+    while nbr != '9':
+        if nbr == '1':
+            single = input("Play all tracks together (y/n)? ").strip()
+            if single.lower() == 'y':
+                ms.saveMelodyStackAs("out2.mid")
+                midiToWAV("out2.mid", "temp2.wav")
+                playWAVkivy("temp2.wav")
+                ms.file.print_tracks()
+            else:
+                trackNo = int(input("Which track number? ").strip())
+                m = ms.getSpecificMelody(trackNo).duplicate()
+                m.generateMIDI()
+                in_fn = "out2track{}.mid".format(trackNo)
+                out_fn = "temp2track{}.wav".format(trackNo)
+                m.saveMelodyAs(in_fn)
+                midiToWAV(in_fn, out_fn)
+                playWAVkivy(out_fn)
+        elif nbr == '2':
+            print("\n1. Copy Existing\n2. New Melody\n3. Back to Main Menu\n")
+            nbr2 = input("Choose a number: ").strip()
+            if nbr2 == '1':
+                trackNo = int(input("Which track to copy from? ").strip())
+                destNo = int(input("Which track to copy to? ").strip())
+                ms.duplicateTrack(trackNo, destNo)
+            elif nbr2 == '2':
+                octv = int(input("Which octave: ").strip())
+                scale1 = generate_scale(ms.getKeySignature(), ms.getScale(),
+                                        octv)
+                numNotes = int(input("How many notes? ").strip())
+                meas = int(input("How many measures? ").strip())
+                mel = []
+                for i in range(numNotes):
+                    mel.append(random.choice(scale1))
+
+                # randomize length of each notes using getRandomStructure func
+                lengths = structures.getEqualNoteStructure(meas, numNotes)
+
+                m = Melody([], instrument=0, bpm=ms.getBPM())
+
+                # add the random notes to generate the melody
+                for i in range(numNotes):
+                    curnote = Note(mel[i], lengths[i])
+                    m.addNote(curnote)
+
+                tNo = int(input("Which track number? ").strip())
+                ms.addMelody(tNo, m)
+        elif nbr == '3':
+            tNo = int(input("Which track number? ").strip())
+            ms.deleteMelody(tNo)
+        elif nbr == '4':
+            src = int(input("Swap track... ").strip())
+            dest = int(input("With track... ").strip())
+            ms.moveMelodies(src, dest)
+        elif nbr == '5':
+            print(ms)
+        elif nbr == '6':
+            key = input("Which key? ").strip()
+            ms.setKeySignature(key)
+        elif nbr == '7':
+            scale = input("Which scale? ").strip()
+            ms.setScale(scale)
+        elif nbr == '8':
+            tNo = int(input("Which track number? ").strip())
+            nL = int(input("How many times do you want to loop? ").strip())
+            ms.loopTrack(tNo, nL)
+
+        print(options)
+        nbr = input("Choose a number: ").strip()"""
 
 Builder.load_file('spin.kv')
-
-keys_4 = {
-    "C": 60,
-    "C#": 61,
-    "Db": 61,
-    "D": 62,
-    "D#": 63,
-    "Eb": 63,
-    "E": 64,
-    "Fb": 64,
-    "F": 65,
-    "F#": 66,
-    "Gb": 66,
-    "G": 67,
-    "G#": 68,
-    "Ab": 68,
-    "A": 69,
-    "A#": 70,
-    "Bb": 70,
-    "B": 71,
-}
-
 
 class MyLayout(Widget):
     def update_label(self, input_id, value):
@@ -49,30 +109,10 @@ class MyLayout(Widget):
 
     def save_melody(self):
         return
-    
+
     def main(self, key, scale, octave, num_notes, num_bars):
-        # Major Chord Melody
-        # start = random.randint(12, 92) + 12  # To make it easy to hear
-        # start = keys_4[key]
-        # instrument = random.randint(0, 127)  # Any random instrument
-        # note1 = Note(start, QUARTER_NOTE)  # Base of chord
-        # note2 = Note(start + 4, QUARTER_NOTE)
-        # note3 = Note(start + 7, QUARTER_NOTE)
-        # note4 = note1.duplicate()
-        # note4.incrementOctave(1)
-
-        # m = Melody([], instrument=instrument, bpm=100)
-        # m.addNote(note1)
-        # m.addNote(note2)
-        # m.addNote(note3)
-        # m.addNote(note4)
-        # print(m)
-
-        # m.generateMIDI()
-        # m.saveMelodyAs('out.mid')
-
-        instrument = random.randint(0, 127)
-        m = Melody([], instrument=instrument, bpm=100)
+        instrument = random.choice(getNonPercussionInstruments(includeSynthEffects=False))
+        m = Melody([], instrument=getMIDINumber(instrument), bpm=100)
 
         scale = scale.lower()
         octave = int(octave)
@@ -89,7 +129,7 @@ class MyLayout(Widget):
             mel.append(random.choice(scale1))
 
         # To be an input later on...the number of measures/bars in melody
-        bars = 4
+        bars = 2
 
         # randomize length of each notes using getRandomStructure function
         lengths = structures.getEqualNoteStructure(bars, num_notes)
@@ -115,3 +155,4 @@ class MainApp(App):
 
 if __name__ == '__main__':
     MainApp().run()
+    #melodyStackBeta()
