@@ -1,8 +1,5 @@
 from play import *
-from generate import *
-from instruments import *
-import structures
-import random
+from melodygen import *
 from melodystack import MelodyStack
 from kivy.app import App
 from kivy.uix.widget import Widget
@@ -102,38 +99,40 @@ class MyLayout(Widget):
             self.ids.octave_label.text = "Octave: " + value
         elif input_id == "input_numnotes_id":
             self.ids.numnotes_label.text = "Num Notes: " + value
+        elif input_id == "input_bars_id":
+            self.ids.bars_label.text = "Num Bars: " + value
         else:
             print("you suck")
 
-    def main(self, key, scale, octave, num_notes):
-        instrument = random.choice(getNonPercussionInstruments(includeSynthEffects=False))
-        m = Melody([], instrument=getMIDINumber(instrument), bpm=100)
+    def save_melody(self):
+        return
 
+    def main(self, key, scale, octave, num_notes, num_bars):
         scale = scale.lower()
-        octave = int(octave)
-        num_notes = int(num_notes)
-        # generate scale (a list of notes to be used in melody)
-        scale1 = generate_scale(key, scale, octave)
-        print("Generated %s%d %s scale." % (key, octave, scale))
-        print(scale1)
+        key = key.lower()
 
-        # randomize notes in scale by choosing {num_notes} random notes
-        mel = []
-        for i in range(num_notes):
-            mel.append(random.choice(scale1))
+        if scale == 'choose scale':
+            scale = ""
 
-        # To be an input later on...the number of measures/bars in melody
-        bars = 2
+        try:
+            octave = int(octave)
+        except:
+            octave = -2
 
-        # randomize length of each notes using getRandomStructure function
-        lengths = structures.getEqualNoteStructure(bars, num_notes)
+        if key == 'choose key':
+            key = ""
 
-        # add the random notes to generate the melody
-        for i in range(num_notes):
-            curnote = Note(mel[i], lengths[i])#, vel=random.randint(1, 127))
-            m.addNote(curnote)
+        try:
+            num_notes = int(num_notes)
+        except:
+            num_notes = -2
 
-        print("Random melody generated.")
+        try:
+            bars = int(num_bars)
+        except:
+            bars = -1
+
+        m = createMelody(bpm=100, scale=scale, octave=octave, key_sig=key, bars=bars)
         print(m)
 
         m.generateMIDI()
@@ -149,4 +148,6 @@ class MainApp(App):
 
 if __name__ == '__main__':
     MainApp().run()
-    #melodyStackBeta()
+
+
+

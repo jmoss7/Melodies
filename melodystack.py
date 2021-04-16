@@ -61,13 +61,14 @@ class MelodyStack:
                 body += "Instrument: {}\n".format(getInstrumentName(
                         self.subMelodies[i].getInstrument()))
                 body += "------------------------\n"
-                body += "Note | Length | Velocity\n------------------------\n"
+                body += " Note  | Length | Velocity\n"
+                body += "------------------------\n"
 
                 for elem in self.subMelodies[i].getNotes():
                     if elem.getName() == "Rest":
-                        body += " Rest "
+                        body += " Rest   "
                     else:
-                        body += "{0:^5} ".format(elem.getName() + \
+                        body += "{0:^7} ".format(elem.getName() + \
                                                    str(elem.getOctave()))
                     body += "{0:^8} ".format(len(elem))
                     body += "{0:^9}\n".format(elem.getVelocity())

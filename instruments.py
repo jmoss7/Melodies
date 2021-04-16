@@ -1,4 +1,3 @@
-import melody
 import random
 
 # The 'instruments' variable is an array where the value at index i represents
@@ -98,6 +97,66 @@ instrumentToMIDI = {"acoustic grand piano": 0, "bright acoustic piano": 1,
                     "seashore": 122, "bird tweet": 123, "telephone ring": 124,
                     "helicopter": 125, "applause": 126, "gunshot": 127}
 
+# The 'instrumentMinMax' variable is a dictionary where each key represents
+# an instrument name as a String and each value represents the minimum and
+# maximum MIDI note that can be played/heard by a certain instrument
+# Note: These values are based on listening tests performed by a 21 year old
+# student on MacBook Air and may not be 100% accurate for all machines/people
+instrumentMinMax = {"acoustic grand piano": (12, 108), "bright acoustic piano": (12, 108),
+                    "electric grand piano": (0, 108), "honky-tonk piano": (12, 108),
+                    "electric piano 1": (0, 127), "electric piano 2": (0, 127),
+                    "harpsichord": (0, 127), "clavi": (0, 127), "celesta": (0, 127),
+                    "glockenspiel": (0, 127), "music box": (0, 127), "vibraphone": (0, 127),
+                    "marimba": (0, 127), "xylophone": (0, 127), "tubular bells": (0, 127),
+                    "dulcimer": (0, 127), "drawbar organ": (0, 127),
+                    "percussive organ": (0, 127), "rock organ": (0, 127),
+                    "church organ": (0, 127), "reed organ": (0, 127), "accordion": (0, 127),
+                    "harmonica": (0, 127), "tango accordion": (0, 127),
+                    "acoustic guitar (nylon)": (0, 127),
+                    "acoustic guitar (steel)": (0, 127),
+                    "electric guitar (jazz)": (0, 127),
+                    "electric guitar (clean)": (0, 127),
+                    "electric guitar (muted)": (0, 127), "overdriven guitar": (0, 127),
+                    "distortion guitar": (0, 127), "guitar harmonics": (0, 127),
+                    "acoustic bass": (0, 127), "electric bass (finger)": (0, 127),
+                    "electric bass (pick)": (0, 127), "fretless bass": (0, 127),
+                    "slap bass 1": (0, 127), "slap bass 2": (0, 127), "synth bass 1": (0, 127),
+                    "synth bass 2": (0, 127), "violin": (0, 127), "viola": (0, 127), "cello": (0, 127),
+                    "contrabass": (0, 127), "tremolo strings": (0, 127),
+                    "pizzicato strings": (0, 127), "orchestral harp": (0, 127),
+                    "timpani": (0, 127), "string ensemble 1": (0, 127),
+                    "string ensemble 2": (0, 127), "synth strings 1": (0, 127),
+                    "synth strings 2": (0, 127), "choir aahs": (0, 127), "voice oohs": (0, 127),
+                    "synth voice": (0, 127), "orchestra hit": (0, 127), "trumpet": (0, 127),
+                    "trombone": (0, 127), "tuba": (0, 127), "muted trumpet": (0, 127),
+                    "french horn": (0, 127), "brass section": (0, 127),
+                    "synth brass 1": (0, 127), "synth brass 2": (0, 127),
+                    "soprano sax": (0, 127), "alto sax": (0, 127), "tenor sax": (0, 127),
+                    "baritone sax": (0, 127), "oboe": (0, 127), "english horn": (0, 127),
+                    "bassoon": (0, 127), "clarinet": (0, 127), "piccolo": (0, 127), "flute": (0, 127),
+                    "recorder": (0, 127), "pan flute": (0, 127), "blown bottle": (0, 127),
+                    "shakuhachi": (0, 127), "whistle": (0, 127), "ocarina": (0, 127),
+                    "lead 1 (square)": (0, 127), "lead 2 (sawtooth)": (0, 127),
+                    "lead 3 (calliope)": (0, 127), "lead 4 (chiff)": (0, 127),
+                    "lead 5 (charang)": (0, 127), "lead 6 (voice)": (0, 127),
+                    "lead 7 (fifths)": (0, 127), "lead 8 (bass + lead)": (0, 127),
+                    "pad 1 (new age)": (0, 127), "pad 2 (warm)": (0, 127),
+                    "pad 3 (polysynth)": (0, 127), "pad 4 (choir)": (0, 127),
+                    "pad 5 (bowed)": (0, 127), "pad 6 (metallic)": (0, 127),
+                    "pad 7 (halo)": (0, 127), "pad 8 (sweep)": (0, 127), "fx 1 (rain)": (0, 127),
+                    "fx 2 (soundtrack)": (0, 127), "fx 3 (crystal)": (0, 127),
+                    "fx 4 (atmosphere)": (0, 127), "fx 5 (brightness)": (0, 127),
+                    "FX 6 (goblins)": (0, 127), "FX 7 (echoes)": (0, 127),
+                    "fx 8 (sci-fi)": (0, 127), "sitar": (0, 127), "banjo": (0, 127),
+                    "shamisen": (0, 127), "koto": (0, 127), "kalimba": (0, 127),
+                    "bag pipe": (0, 127), "fiddle": (0, 127), "shanai": (0, 127),
+                    "tinkle bell": (0, 127), "agogo": (0, 127), "steel drums": (0, 127),
+                    "woodblock": (0, 127), "taiko Drum": (0, 127), "melodic tom": (0, 127),
+                    "synth drum": (0, 127), "reverse cymbal": (0, 127),
+                    "guitar fret noise": (0, 127), "breath noise": (0, 127),
+                    "seashore": (0, 127), "bird tweet": (0, 127), "telephone ring": (0, 127),
+                    "helicopter": (0, 127), "applause": (0, 127), "gunshot": (0, 127)}
+
 # The 'categories' variable is a dictionary where each key-value pair
 # represents a category of instruments and the list of MIDI #'s for the
 # instruments in that category
@@ -190,7 +249,7 @@ def getRandomInstrument():
     """ Returns the number of any random instrument out of the 128 possible
         instruments """
 
-    return instruments[random.randint(0, 127)]
+    return random.randint(0, 127)
 
 def getRandomInstrumentFromType(category: str):
     """ Returns the number of a random instrument that falls under the category
@@ -199,6 +258,12 @@ def getRandomInstrumentFromType(category: str):
 
     key = category.lower()
     if categories.get(key, False):
-        return categories[key][random.randint(0, len(categories[key]) - 1)]
+        return random.choice(categories[key])
 
     return 0
+
+def getInstrumentMinMax(instrument: str):
+    """ Returns a tuple representing the minimum (t[0]) and maximum (t[1])
+        MIDI notes that parameter instrument can play """
+
+    return instrumentMinMax[instrument.lower()]
