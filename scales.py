@@ -54,10 +54,17 @@ scales = {
 # generates scale from from the given key,scale, & octave
 def generate_scale(key, scale, octave):
 	out = []
+
 	for i in range(len(scales[scale])):
 		out.append(keys_0[key] + (12 * octave) + scales[scale][i])
+
+	out.append(-1)
+
 	return out
 
+def get_random_scale():
+	bank = list(scales.keys())
+	return random.choice(bank)
 
 # generate major chord melody
 def generate_major(key):

@@ -1,7 +1,7 @@
 from mido import MidiFile, MidiTrack, Message, MetaMessage, bpm2tempo
 from instruments import getInstrument as getInstrumentName
 from general import *
-import generate
+import scales
 from note import Note
 from typing import Tuple, List
 
@@ -14,7 +14,7 @@ FIRST_NOTE_MSG_IDX = 4  # Should always be +1 of last setup message
 
 class Melody:
     # Dunder methods (__method__)
-    def __init__(self, contents: List[int], instrument: int = 0,
+    def __init__(self, contents: List[Note], instrument: int = 0,
                  bpm: int = 120, scale: str = "major", octave: int = 4,
                  time_sig: Tuple[int, int] = (4, 4), key_sig: str = "C"):
         """ Constructs a Melody object, which contains the characteristics
@@ -35,7 +35,7 @@ class Melody:
         self.timeSig = time_sig
         self.keySig = key_sig
         self.file = MidiFile()  # MIDI file for melody
-        self.modified = False  # Flag for whether MIDI file is outdated
+        self.modified = True  # Flag for whether MIDI file is outdated
 
     def __len__(self):
         """ Returns the length of the melody in units SMALLEST_NOTE (1/32) """
@@ -53,13 +53,13 @@ class Melody:
         header += "Instrument: {}\n".format(getInstrumentName(
                                             self.instrument))
         header += "------------------------\n"
-        header += "Note | Length | Velocity\n------------------------\n"
+        header += " Note  | Length | Velocity\n------------------------\n"
 
         for elem in self.sequence:
             if elem.getName() == "Rest":
-                header += " Rest "
+                header += " Rest   "
             else:
-                header += "{0:^5} ".format(elem.getName() + \
+                header += "{0:^7} ".format(elem.getName() + \
                                            str(elem.getOctave()))
             header += "{0:^8} ".format(len(elem))
             header += "{0:^9}\n".format(elem.getVelocity())
@@ -146,9 +146,9 @@ class Melody:
             if self.scale == newScale:
                 return
 
-            oldScaleKeys = generate.generate_scale(
+            oldScaleKeys = scales.generate_scale(
                 self.keySig, self.scale, self.octave)
-            newScaleKeys = generate.generate_scale(
+            newScaleKeys = scales.generate_scale(
                 self.keySig, newScale, self.octave)
 
             if len(oldScaleKeys) != len(newScaleKeys):
@@ -182,6 +182,7 @@ class Melody:
             if self.keySig == newKeySig:
                 return
 
+            newKeySig = flatsToSharps(newKeySig)
             allKeys = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#",
                        "A", "A#", "B"]
 
@@ -198,7 +199,7 @@ class Melody:
         self.keySig = newKeySig
         self.modified = True
 
-    def setTimeSignature(self, newTimeSig: (int, int)):
+    def setTimeSignature(self, newTimeSig: Tuple[int, int]):
         """ Sets the time signature of the melody """
 
         self.timeSig = newTimeSig
@@ -208,6 +209,11 @@ class Melody:
         """ Sets the BPM of the melody """
 
         self.bpm = newBPM
+        self.modified = True
+
+    def setAsModified(self):
+        """ Sets the melody as being modified """
+
         self.modified = True
 
     # Additional functions
@@ -220,25 +226,27 @@ class Melody:
         self.modified = True
 
     def removeNote(self, idx: int):
-        """ Removes the Note object at index idx of the melody """
+        """ Removes the Note object at index idx of the melody and returns
+            that note object """
 
         self.length -= len(self.sequence[idx])
         self.numNotes -= 1
-        self.sequence.pop(idx)
+        n = self.sequence.pop(idx)
         self.modified = True
+        return n
 
     def generateMIDI(self):
         """ Build the MIDI file based on mido library specifications """
-
-        self.file.ticks_per_beat = TICKS_PER_BEAT
-        track = MidiTrack()  # Track to hold a single melody
 
         if len(self.file.tracks) > 0:  # If this has been generated before
             if not self.modified:  # If melody has not been modified, leave it
                 return
 
             self.file.tracks.clear()
+        else:
+            self.file.ticks_per_beat = TICKS_PER_BEAT
 
+        track = MidiTrack()  # Track to hold a single melody
         self.file.tracks.append(track)
 
         # Tell MIDI file to set instrument to self.instrument
@@ -272,8 +280,11 @@ class Melody:
 
         self.modified = False
 
-    def saveMelodyAs(self, name):
+    def saveMelodyAs(self, name: str):
         """ Save the MIDI file in the program's directory as name """
+
+        if self.modified:
+            self.generateMIDI()
 
         self.file.save(name)
 
@@ -284,7 +295,85 @@ class Melody:
                       scale=self.scale, time_sig=self.timeSig,
                       key_sig=self.keySig)
 
-    def loop(self, numLoops):
+    def swapSegments(self, ref, swapPos):
+        """ Given a reference melody, swap the notes starting from position
+            swapPos in this melody with the notes starting from position
+            swapPos in the melody ref (position refers to the number of
+            SMALLEST_NOTE lengths) """
+
+        if not(isinstance(ref, Melody)):
+            # If reference melody is not of type melody, do not do anything
+            return
+
+        if len(ref) != len(self):
+            # If the length of this melody is not exactly the length of the
+            # reference melody, do not do anything
+            return
+
+        if swapPos < 0 or swapPos > self.length:
+            # If the swap position is out of bounds with the note sequence, do
+            # not do anything
+            return
+
+        selfCurPos, refCurPos = 0, 0
+        selfIdx, refIdx = 0, 0
+
+        # Set selfIdx and refIdx to the index of the first note to swap in
+        # their respective melodies
+        while selfCurPos < swapPos or refCurPos < swapPos:
+            if selfCurPos < swapPos:
+                selfCurPos += len(self.sequence[selfIdx])
+                selfIdx += 1
+
+            if refCurPos < swapPos:
+                refCurPos += len(ref.sequence[refIdx])
+                refIdx += 1
+
+        # If selfCurPos > swapPos, that means that the swap position is in
+        # the middle of a note. Cut the note at that section and make the
+        # attribute changes to the Melody object
+        if selfCurPos != swapPos:
+            noteToChange = self.sequence[selfIdx-1]
+            originalLength = len(noteToChange)
+            extraLength = selfCurPos - swapPos
+            noteToChange.setLength(len(noteToChange) - extraLength)
+            splicedNote = noteToChange.duplicate()
+            splicedNote.setLength(originalLength - len(splicedNote))
+            self.sequence.insert(selfIdx, splicedNote)
+            self.numNotes += 1
+
+        # Do the same as above but with reference melody
+        if refCurPos != swapPos:
+            noteToChange = ref.sequence[refIdx-1]
+            originalLength = len(noteToChange)
+            extraLength = refCurPos - swapPos
+            noteToChange.setLength(len(noteToChange) - extraLength)
+            splicedNote = noteToChange.duplicate()
+            splicedNote.setLength(originalLength - len(splicedNote))
+            ref.sequence.insert(refIdx, splicedNote)
+            ref.numNotes += 1
+
+        # Save number of notes from selfIdx to end of sequence now since array
+        # will be modified during while loop
+        selfNotesToSwap = self.numNotes - selfIdx
+        refNotesToSwap = ref.numNotes - refIdx
+
+        while selfNotesToSwap > 0 or refNotesToSwap > 0:
+            # Remove a note from one melody and add it to the end of the other
+            if selfNotesToSwap > 0:
+                noteFromSelf = self.removeNote(selfIdx)
+                ref.addNote(noteFromSelf)
+                selfNotesToSwap -= 1
+
+            if refNotesToSwap > 0:
+                noteFromRef = ref.removeNote(refIdx)
+                self.addNote(noteFromRef)
+                refNotesToSwap -= 1
+
+        self.modified = True
+        ref.modified = True
+
+    def loop(self, numLoops: int):
         """ Loops a melody's notes numLoops amount of times """
 
         if self.length > 0 and numLoops > 0:
