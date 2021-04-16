@@ -53,9 +53,9 @@ class Note:
             return "Rest"
 
         order = self.nbr % 12  # Position in octave (Ex: 0 - C, 1 - C#,...)
-        return ['C', 'C#', 'D', 'D#',
-                'E', 'F', 'F#', 'G',
-                'G#', 'A', 'A#', 'B'][order]
+        return ['C', 'C#/Db', 'D', 'D#/Eb',
+                'E', 'F', 'F#/Gb', 'G',
+                'G#/Ab', 'A', 'A#/Bb', 'B'][order]
 
     def getLengthTime(self, timeRes: int):
         """ Returns length of a note in units of time (for MIDI message) """
