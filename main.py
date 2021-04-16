@@ -10,6 +10,10 @@ from kivy.uix.tabbedpanel import TabbedPanel
 from kivy.lang import Builder
 from kivy.uix.button import Button
 from kivy.properties import ObjectProperty
+import shutil
+
+MELODY_SAVE_NUMBER: int = 1
+MELODY_FILENAME: str = "out.mid"
 
 """def melodyStackBeta():
     ms = MelodyStack()
@@ -110,7 +114,10 @@ class MyLayout(TabbedPanel):
             print("you suck")
 
     def save_melody(self):
-        return
+        global MELODY_SAVE_NUMBER
+        global MELODY_FILENAME
+        shutil.copyfile(MELODY_FILENAME, "saved_melody_" + str(MELODY_SAVE_NUMBER) + ".mid")
+        MELODY_SAVE_NUMBER += 1
 
     def main(self, key, scale, octave, num_notes, num_bars):
         instrument = random.choice(getNonPercussionInstruments(includeSynthEffects=False))
