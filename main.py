@@ -117,10 +117,12 @@ class MyLayout(Widget):
         shutil.copyfile(MELODY_FILENAME, "saved_melody_" + str(MELODY_SAVE_NUMBER) + ".mid")
         MELODY_SAVE_NUMBER += 1
 
-    def main(self, key, scale, octave, num_notes, num_bars):
-        instrument = random.choice(getNonPercussionInstruments(includeSynthEffects=False))
-        m = Melody([], instrument=getMIDINumber(instrument), bpm=100)
-        print(getNonPercussionInstruments())
+    def main(self, key, scale, octave, num_notes, num_bars, instrument):
+        print("Instrument: ", instrument)
+        selected_instrument = instrument
+        if instrument == 'Choose Instrument':
+            selected_instrument = random.choice(getNonPercussionInstruments(includeSynthEffects=False))
+        m = Melody([], instrument=getMIDINumber(selected_instrument), bpm=100)
         scale = scale.lower()
         octave = int(octave)
         num_notes = int(num_notes)
