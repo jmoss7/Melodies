@@ -4,6 +4,10 @@ from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.lang import Builder
 from kivy.uix.button import Button
+import shutil
+
+MELODY_SAVE_NUMBER: int = 1
+MELODY_FILENAME: str = "out.mid"
 
 Builder.load_file('spin.kv')
 
@@ -23,7 +27,10 @@ class MyLayout(Widget):
             print("you suck")
 
     def save_melody(self):
-        return
+        global MELODY_SAVE_NUMBER
+        global MELODY_FILENAME
+        shutil.copyfile(MELODY_FILENAME, "saved_melody_" + str(MELODY_SAVE_NUMBER) + ".mid")
+        MELODY_SAVE_NUMBER += 1
 
     def main(self, key, scale, octave, num_notes, num_bars):
         scale = scale.lower()
@@ -62,5 +69,3 @@ class MainApp(App):
 
 if __name__ == '__main__':
     MainApp().run()
-
-
