@@ -113,7 +113,7 @@ class MyLayout(Widget):
     def main(self, key, scale, octave, num_notes, num_bars):
         instrument = random.choice(getNonPercussionInstruments(includeSynthEffects=False))
         m = Melody([], instrument=getMIDINumber(instrument), bpm=100)
-
+        print(getNonPercussionInstruments())
         scale = scale.lower()
         octave = int(octave)
         num_notes = int(num_notes)

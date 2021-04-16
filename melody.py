@@ -14,7 +14,7 @@ FIRST_NOTE_MSG_IDX = 4  # Should always be +1 of last setup message
 
 class Melody:
     # Dunder methods (__method__)
-    def __init__(self, contents: List[int], instrument: int = 0,
+    def __init__(self, contents: List[Note], instrument: int = 0,
                  bpm: int = 120, scale: str = "major", octave: int = 4,
                  time_sig: Tuple[int, int] = (4, 4), key_sig: str = "C"):
         """ Constructs a Melody object, which contains the characteristics
