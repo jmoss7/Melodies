@@ -64,6 +64,13 @@ def getEqualNoteStructure(numBars: int, numNotes: int):
         is (roughly) equal length and the notes (when played) spans over
         'numBars' worth of music """
 
+    # FIX: In the future, make it so that if the number of notes does not
+    # spread well over the number of bars, make each not as close enough
+    # together so that instead of having a lot of notes the same length
+    # and the last note being long, each note would be +/- 2 or so length
+    # away from a suitable equal length (e.g. Instead of melody with
+    # lengths 2, 2, 2, 10 => 5, 3, 5, 3)
+
     if numNotes > (numBars * melody.SMALLEST_NOTE):
         "Should be error, but for now..."
         return []
