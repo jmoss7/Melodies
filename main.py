@@ -6,8 +6,10 @@ import random
 from melodystack import MelodyStack
 from kivy.app import App
 from kivy.uix.widget import Widget
+from kivy.uix.tabbedpanel import TabbedPanel
 from kivy.lang import Builder
 from kivy.uix.button import Button
+from kivy.properties import ObjectProperty
 
 """def melodyStackBeta():
     ms = MelodyStack()
@@ -90,9 +92,9 @@ from kivy.uix.button import Button
         print(options)
         nbr = input("Choose a number: ").strip()"""
 
-Builder.load_file('spin.kv')
 
-class MyLayout(Widget):
+
+class MyLayout(TabbedPanel):
     def update_label(self, input_id, value):
         if input_id == "spinner_key_id":
             self.ids.key_label.text = "Key: " + value
@@ -150,6 +152,7 @@ class MyLayout(Widget):
 
 class MainApp(App):
     def build(self):
+        Builder.load_file('spin.kv')
         return MyLayout()
 
 
