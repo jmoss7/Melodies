@@ -99,13 +99,9 @@ def chooseRandomInstrument(randType: int, category: str = ""):
 
 def getSuitableOctaves(instrument):
     """ Based on a specific instrument, return a list of octaves (integers)
-        that are within each instruments max and min note limits
-        (Note: This function also repeats octaves to represent different
-        probabilities """
+        that are within each instruments max and min note limits """
 
     minNote, maxNote = getInstrumentMinMax(getInstrument(instrument))
-    probs = {-1: 3, 0: 3, 1: 7, 2: 7, 3: 20, 4: 20, 5: 20, 6: 7, 7: 7, 8: 3,
-             9: 3}
 
     smallestOctave = minNote // 12
     # If the minimum note is the first note of the octave, also include that
@@ -122,8 +118,8 @@ def getSuitableOctaves(instrument):
     # Return each octave between smallest and largest octave, inclusively
     # (with repeated numbers indicating higher probabilities)
     suitable = []
-    for i in range(smallestOctave, largestOctave + 1):
-        suitable += [i] * probs[i]
+    for i in range(max(0, smallestOctave), min(8, largestOctave + 1)):
+        suitable.append(i)
 
     return suitable
 
@@ -141,7 +137,7 @@ def buildMelodyNotes(m, bars):
     # Get a random number of notes value between the number of bars (so
     # that there is roughly one note per bar) and SMALLEST_NOTE //
     # OTHER_NOTE (so that each note would be roughly OTHER_NOTE long)
-    numNotes = random.randint(bars, max(1, bars * (SMALLEST_NOTE //
+    numNotes = random.randint(4, max(1, bars * (SMALLEST_NOTE //
                                                    EIGHTH_NOTE)))
     seq = []
     # randomize notes in scale by choosing {numNotes} random notes\
