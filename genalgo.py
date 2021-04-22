@@ -60,13 +60,14 @@ class MyLayout(Widget):
 
 
 
+
         # **************** NEEDS ERROR CHECKING, EDGE CASES, ETC **************
         # Begin genetic algorithm.
 
-        # gen1 is the first generation of Children objects
+        # create the first generation with empty list of children
         gen1 = Generation([], 1)
         print("Creating first generation...........")
-        # Create 5 random melodies from the same instrument, create Child w/ melody, append to gen1
+        # Create 5 random melodies from the same instrument, create Child w/ melody, add to gen1
         randInstr = chooseRandomInstrument(INSTRUMENT_NP_NS_WITHOUT_CATEGORY)
         for i in range(5):
             m = createMelody(instrument=randInstr, bpm=100, scale=scale, octave=octave, key_sig=key, bars=bars)
@@ -74,52 +75,83 @@ class MyLayout(Widget):
             gen1.getChildren().append(Child(m))
 
 
-        # Begin rating each of the 5 melodies
+        # Begin rating each of the 5 initial melodies
         # ********* ADD LATER: Option to change instrument ************* 
-        print("Generated 5 melodies. Rate each one from 1 to 5:")
-        count = 0
-        for child in gen1.getChildren():
-            count += 1
-            m = child.getData()
-            m.generateMIDI()
-            m.saveMelodyAs('out.mid')
-            print("Playing Melody %d..." % count)
+        print("Generated 5 melodies.")
+        ######gen1.giveRatings()
+        # sum total rating and normalize for fitness probabilities
+        ######gen1.calculateTotalRating()
+        #######gen1.normalizeFitness()
+
+
+
+
+
+        # ************ TESTING MUTATE FUNCTION HERE **************
+
+
+        print("Playing first melody...")
+        firstChild = gen1.getChildren()[0]
+        mel = firstChild.getData()
+        mel.generateMIDI()
+        mel.saveMelodyAs('out.mid')
+        midiToWAV("out.mid", "temp.wav")
+        playWAVkivy("temp.wav")
+
+        print(firstChild.getData())
+
+        testMutate = False
+        userInput = input("Mutate (y/n) ? ")
+        if userInput == "y":
+            testMutate = True
+        else:
+            testMutate = False
+
+        while testMutate == True:
+            firstChild.mutate()
+            newmel = firstChild.getData()
+            print("Playing mutated melody...")
+            newmel.generateMIDI()
+            newmel.saveMelodyAs('out.mid')
             midiToWAV("out.mid", "temp.wav")
             playWAVkivy("temp.wav")
-            curOption = input("Rate this melody 1-10 or type 'replay' to replay: ")
-            while (curOption == "replay" or curOption == "Replay"):
-                print("Replaying melody...")
-                playWAVkivy("temp.wav")
-                curOption = input("Rate this melody 1-10 or type 'replay' to replay: ")
-            # **************** NEED ERROR CHECKING HERE ******************
-            # if option is not int from 1-10, error
-            # else:
-            # set rating of current melody
-            curRating = int(curOption)
-            child.setFitness(float(curRating))
 
+            print(firstChild.getData())
 
-        print("************** PRINTING FITNESS *********************")
+            userInput = input("Mutate (y/n) ? ")
+            if userInput == "y":
+                testMutate = True
+            else:
+                testMutate = False
 
-        count = 0
-        for child in gen1.getChildren():
-            count += 1
-            print("Rating: %d: %d" % (count, child.getFitness()))
+        print("Done mutating. Goodbye!")
 
-        gen1.calculateTotalFitness();
-        print("Total Fitness: %d" % gen1.getTotalFitness())
-        gen1.normalizeFitness();
-
-
-        print("NORMALIZED")
-        count = 0
-        for child in gen1.getChildren():
-            count += 1
-            print("Fitness %d: %d" % (count, child.getFitness()))
+        # ***** END TEST MUTATE WHY IS THE MELODY NOT CHANGING **********
 
 
 
-        #for child in gen1:
+
+
+
+        # select two parents to be crossed, and one (non-parent) survivor
+        ########parent1 = gen1.selection()
+        #print("Parent 1 Fitness: %f" % parent1.getFitness())
+        #print("Rating %f" % parent1.getRating())
+        ########parent2 = gen1.selection()
+        #print("Parent 2 Fitness: %f" % parent2.getFitness())
+        #print("Rating: %f" % parent2.getRating())
+        ########othersurvivor = gen1.selection()
+        #print("Survivor Fitness: %f" % othersurvivor.getFitness())
+        #print("Rating: %f" % othersurvivor.getRating())
+
+
+
+
+        # TO DO: CREATE NEXT GENERATION - In generation.py?????
+
+
+
+        
 
 
 
