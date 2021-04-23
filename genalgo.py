@@ -90,6 +90,15 @@ class MyLayout(Widget):
 
         # Use ratings to advance to next generation, or stop.
         option = input("[a]dvance to next gen? or [s]top: ")
+        while option == "a" or option == "A":
+            gen1.advanceToNextGen()
+            print("Now playing gen %d." % gen1.getGen())
+            gen1.giveRatings()
+            gen1.calculateTotalRating()
+            gen1.normalizeFitness()
+            option = input("[a]dvance to next gen? or [s]top: ")
+        print("Finished after %d generations." % gen1.getGen())
+
 
 
 #       This error appears sometimes:
@@ -103,15 +112,22 @@ class MyLayout(Widget):
    File "/Users/austinng/calpoly/seniorproj/finalrepo/Melodies/melody.py", line 267, in generateMIDI
      noteLen = self.sequence[i].getLengthTime(TICKS_PER_BEAT)
  IndexError: list index out of range
+
+
+
+This one too
+   File "genalgo.py", line 94, in main
+     gen1.advanceToNextGen()
+   File "/Users/austinng/calpoly/seniorproj/finalrepo/Melodies/generation.py", line 168, in advanceToNextGen
+     parents = self.selection()
+   File "/Users/austinng/calpoly/seniorproj/finalrepo/Melodies/generation.py", line 127, in selection
+     replace=False, p=self.getProbabilities())
+   File "mtrand.pyx", line 926, in numpy.random.mtrand.RandomState.choice
+ ValueError: 'a' and 'p' must have same size
+
 """
 
-        while option == "a" or option == "A":
-            gen1.advanceToNextGen()
-            print("Now playing gen %d." % gen1.getGen())
-            gen1.giveRatings()
-            option = input("[a]dvance to next gen? or [s]top: ")
 
-        print("Finished after %d generations." % gen1.getGen())
 
 
 #   Got this far

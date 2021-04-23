@@ -76,6 +76,7 @@ class Child:
 		else:
 			randNote = random.choice(self.getData().getNotes())
 			rng = random.randint(-11, 12)
+			print("RNG NUMBER IS %d" % rng)
 			if rng == 0:
 				if randNote.getVelocity() == 0:
 					randNote.setVelocity(64)
