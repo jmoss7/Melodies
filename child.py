@@ -39,33 +39,68 @@ class Child:
 		self.fitness = newfitness
 
 
-	# ************* TEST ME!!!!!!!! ********************
-	# change one random note in the melody (data attribute)
-	# select random note:
-	#	add/subtract MIDI number by random number from 1 to 11 to change note
+
+
+
+
+	# Creates a new Melody obj, placing it in a new Child obj
+	# NOTE: does NOT copy rating or fitness
+	def makeCopy(self):
+		if self.getData() == None:
+			print("makeCopy error: no data")
+			exit(1)
+		return Child(self.getData().duplicate())
+
+
+
+	# Crosses two children using Melody.swapSegments()
+	# NOTE: Should play around with swapPos in swapSegments() function
+	def crossover(self, other):
+		swapPos = random.randint(1, len(self.getData()))
+		self.getData().swapSegments(other.getData(), swapPos)
+
+
+
+
+
+	# For GenAlgo. Changes one random note in the melody (data attribute)
+	# 1) Select random note in melody (self.data). Fail if empty melody
+	# 2) Generate random number from -11 to 12
+	# 3) If rng = 0, change a note to a rest, or rest to a note
+	# 		Else, add/subtract MIDI number by rng
+	# 4) Flag melody as modified
 	def mutate(self):
 		if len(self.getData().getNotes()) == 0:
 			print("ERROR: Could not mutate empty melody")
 			exit(1)
 		else:
 			randNote = random.choice(self.getData().getNotes())
-			print("old note: %d" % randNote.getMidiNumber())
-			newMidi = randNote.getMidiNumber() + random.randint(-11, 12)
-			# if note too high/low, add/subtract octave
-			if newMidi < 12:
-				newMidi += 12
-			elif newMidi > 107:
-				newMidi -= 12
-			# set new MIDI number to note
-			randNote.setMidiNumber(newMidi)
-			print("new note: %d" % randNote.getMidiNumber())
+			rng = random.randint(-11, 12)
+			if rng == 0:
+				if randNote.getVelocity() == 0:
+					randNote.setVelocity(64)
+				else:
+					randNote.setVelocity(0)
+			else:
+				newMidi = randNote.getMidiNumber() + rng
+				if newMidi < 12:
+					newMidi += 12
+				elif newMidi > 107:
+					newMidi -= 12
+				randNote.setMidiNumber(newMidi)
+			self.getData().setAsModified()
 
 
 
 
 
-	# For variation with genetic algorithm. Changes a random note within the Melody.
-	#def mutate(self):
+
+
+
+
+
+
+
 
 
 
