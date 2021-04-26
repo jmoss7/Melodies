@@ -91,7 +91,7 @@ class Generation:
 
 	# Assign ratings (fitness) to each child in the current generation
 	def giveRatings(self):
-		print("Rate each melody from 1 to 5:")
+		print("Rate each melody from 1 to 10.")
 		count = 0
 		highestRating = 0
 		for child in self.getChildren():
@@ -183,8 +183,7 @@ class Generation:
 		nextGen.append(crossMe3)
 		nextGen.append(crossMe4)
 
-		# is there a way to free objects in the old self.children??????
-		# if there is, do that here
+
 
 		random.shuffle(nextGen)
 		self.children = nextGen
@@ -194,8 +193,6 @@ class Generation:
 		self.isSorted = False
 		self.topRatingIdx = None
 		self.probabilities = []
-
-
 
 
 

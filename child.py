@@ -1,4 +1,5 @@
 from melody import Melody
+from scales import *
 
 import random
 
@@ -65,31 +66,33 @@ class Child:
 
 	# For GenAlgo. Changes one random note in the melody (data attribute)
 	# 1) Select random note in melody (self.data). Fail if empty melody
-	# 2) Generate random number from -11 to 12
-	# 3) If rng = 0, change a note to a rest, or rest to a note
-	# 		Else, add/subtract MIDI number by rng
+	# 2) Select random note (newNote) within scale of melody
+	# 3) If randNote = -1, change a note to a rest, or rest to a note
+	# 		Else, replace note with newNote
 	# 4) Flag melody as modified
 	def mutate(self):
 		if len(self.getData().getNotes()) == 0:
 			print("ERROR: Could not mutate empty melody")
 			exit(1)
 		else:
-			randNote = random.choice(self.getData().getNotes())
-			rng = random.randint(-11, 12)
-			print("RNG NUMBER IS %d" % rng)
-			if rng == 0:
-				if randNote.getVelocity() == 0:
-					randNote.setVelocity(64)
-				else:
-					randNote.setVelocity(0)
+			mel = self.getData()
+			scale = generate_scale(mel.getKeySignature(),
+				mel.getScale(), mel.getOctave())
+
+			randNote = random.choice(mel.getNotes())
+			newNote = random.choice(scale)
+
+			if randNote.getVelocity() == 0:
+				randNote.setVelocity(64)
+				randNote.setMidiNumber(random.choice(scale[:-1]))
 			else:
-				newMidi = randNote.getMidiNumber() + rng
-				if newMidi < 12:
-					newMidi += 12
-				elif newMidi > 107:
-					newMidi -= 12
-				randNote.setMidiNumber(newMidi)
-			self.getData().setAsModified()
+				if newNote == -1:
+					randNote.setVelocity(0)
+				else:
+					randNote.setMidiNumber(newNote)
+
+
+			mel.setAsModified()
 
 
 

@@ -76,7 +76,7 @@ class MyLayout(Widget):
             print(m)
             gen1.getChildren().append(Child(m))
 
-
+        
         # Begin rating each of the 5 initial melodies
         # ********* ADD LATER: Option to change instrument ************* 
         print("Generated 5 melodies. Now playing gen 1.")
@@ -106,28 +106,21 @@ class MyLayout(Widget):
    File "/Users/austinng/calpoly/seniorproj/finalrepo/Melodies/spin.kv", line 63, in <module>
      on_press: root.main(spinner_key_id.text, spinner_scale_id.text, spinner_octave_id.text, input_numnotes_id.text, input_bars_id.text)
    File "genalgo.py", line 94, in main
-     gen1.giveRatings()
-   File "/Users/austinng/calpoly/seniorproj/finalrepo/Melodies/generation.py", line 100, in giveRatings
-     m.generateMIDI()
-   File "/Users/austinng/calpoly/seniorproj/finalrepo/Melodies/melody.py", line 267, in generateMIDI
-     noteLen = self.sequence[i].getLengthTime(TICKS_PER_BEAT)
- IndexError: list index out of range
-
-
-
-This one too
-   File "genalgo.py", line 94, in main
      gen1.advanceToNextGen()
-   File "/Users/austinng/calpoly/seniorproj/finalrepo/Melodies/generation.py", line 168, in advanceToNextGen
-     parents = self.selection()
-   File "/Users/austinng/calpoly/seniorproj/finalrepo/Melodies/generation.py", line 127, in selection
-     replace=False, p=self.getProbabilities())
-   File "mtrand.pyx", line 926, in numpy.random.mtrand.RandomState.choice
- ValueError: 'a' and 'p' must have same size
+   File "/Users/austinng/calpoly/seniorproj/finalrepo/Melodies/generation.py", line 178, in advanceToNextGen
+     crossMe3 = parents[0].makeCopy()
+   File "/Users/austinng/calpoly/seniorproj/finalrepo/Melodies/child.py", line 53, in makeCopy
+     return Child(self.getData().duplicate())
+   File "/Users/austinng/calpoly/seniorproj/finalrepo/Melodies/melody.py", line 296, in duplicate
+     key_sig=self.keySig)
+   File "/Users/austinng/calpoly/seniorproj/finalrepo/Melodies/melody.py", line 28, in __init__
+     self.length = sum([len(x) for x in contents])
+   File "/Users/austinng/calpoly/seniorproj/finalrepo/Melodies/melody.py", line 28, in <listcomp>
+     self.length = sum([len(x) for x in contents])
+ ValueError: __len__() should return >= 0
+
 
 """
-
-
 
 
 #   Got this far
