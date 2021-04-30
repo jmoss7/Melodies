@@ -333,10 +333,16 @@ class Melody:
         # the middle of a note. Cut the note at that section and make the
         # attribute changes to the Melody object
         if selfCurPos != swapPos:
+            print("********* SELF ********")
+            print(self.sequence[selfIdx-1])
             noteToChange = self.sequence[selfIdx-1]
             originalLength = len(noteToChange)
+            print("extraLength = %d - %d" % (selfCurPos, swapPos))
             extraLength = selfCurPos - swapPos
+            print("originalLength: %d" % originalLength)
+            print("extraLength: %d" % extraLength)
             noteToChange.setLength(originalLength - extraLength)
+            print("self length: %d" % len(noteToChange))
             splicedNote = noteToChange.duplicate()
             splicedNote.setLength(extraLength)
             self.sequence.insert(selfIdx, splicedNote)
@@ -344,10 +350,16 @@ class Melody:
 
         # Do the same as above but with reference melody
         if refCurPos != swapPos:
+            print("*********** REF ************")
+            print(ref.sequence[refIdx-1])
             noteToChange = ref.sequence[refIdx-1]
             originalLength = len(noteToChange)
+            print("extraLength = %d - %d" % (refCurPos, swapPos))
             extraLength = refCurPos - swapPos
+            print("originalLength: %d" % originalLength)
+            print("extraLength: %d" % extraLength)
             noteToChange.setLength(originalLength - extraLength)
+            print("ref length: %d" % len(noteToChange))
             splicedNote = noteToChange.duplicate()
             splicedNote.setLength(extraLength)
             ref.sequence.insert(refIdx, splicedNote)

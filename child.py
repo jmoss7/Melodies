@@ -67,7 +67,7 @@ class Child:
 	# For GenAlgo. Changes one random note in the melody (data attribute)
 	# 1) Select random note in melody (self.data). Fail if empty melody
 	# 2) Select random note (newNote) within scale of melody
-	# 3) If randNote = -1, change a note to a rest, or rest to a note
+	# 3) If newNote = -1, change a note to a rest, or rest to a note
 	# 		Else, replace note with newNote
 	# 4) Flag melody as modified
 	def mutate(self):
@@ -90,12 +90,7 @@ class Child:
 					randNote.setVelocity(0)
 				else:
 					randNote.setMidiNumber(newNote)
-
-
 			mel.setAsModified()
-
-
-
 
 
 

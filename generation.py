@@ -102,9 +102,9 @@ class Generation:
 			print("Playing Melody %d..." % count)
 			midiToWAV("out.mid", "temp.wav")
 			playWAVkivy("temp.wav")
-			curOption = input("Rate this melody 1-10 or type 'replay' to replay: ")
-			while (curOption == "replay" or curOption == "Replay"):
-				print("Replaying melody...")
+			curOption = input("Rate this melody 1-10 or type 'r' or 'replay' to replay: ")
+			while (curOption == "replay" or curOption == "r"):
+				print("Replaying melody %d ..." % count)
 				playWAVkivy("temp.wav")
 				curOption = input("Rate this melody 1-10 or type 'replay' to replay: ")
 			# ********** NEED ERROR CHECKING HERE *************
@@ -151,13 +151,12 @@ class Generation:
 	#		4) mutate (change one random note) every child in next gen
 	#		5) replace current generation with the 5 individuals above,
 	#		6) restore all attributes (except children and gen) to default
-	#	NOTE 1: could get expensive from making a lot of copies????
-	#			not sure how python works with freeing data and objects
-	#	NOTE 2: should play around with what to pass to next gen:
+	#	NOTE: should play around with what to pass to next gen:
 	#		(choose 2 parents to crossover 2 times + top child) <- using this
 	#		choose 2 parents to crossover 2 times + random child
 	#		choose 2 parents to crossover once + top two + random child
 	#		etc
+	#	NOTE 2: try with 10?
 	def advanceToNextGen(self):
 		nextGen = []
 
@@ -183,7 +182,70 @@ class Generation:
 		nextGen.append(crossMe3)
 		nextGen.append(crossMe4)
 
+		random.shuffle(nextGen)
+		self.children = nextGen
+		self.gen = self.gen + 1
+		self.totalRating = None
+		self.isNormalized = False
+		self.isSorted = False
+		self.topRatingIdx = None
+		self.probabilities = []
 
+
+#	USING THIS RIGHT NOW instead of with 5 
+#	Same as advanceToNextGen except with 10 individuals per generation.
+#	Chooses 10 parents, crosses and passes 9 children
+#	Still chooses top individual
+	def advanceToNextGenWith10(self):
+		nextGen = []
+
+		topIndividual = self.children[self.getTopRatingIdx()].makeCopy()
+		topIndividual.mutate()
+		nextGen.append(topIndividual)
+
+		parents = self.selection()
+		crossMe1 = parents[0].makeCopy()
+		crossMe2 = parents[1].makeCopy()
+		crossMe1.crossover(crossMe2)
+		crossMe1.mutate()
+		crossMe2.mutate()
+		nextGen.append(crossMe1)
+		nextGen.append(crossMe2)
+
+		parents = self.selection()
+		crossMe3 = parents[0].makeCopy()
+		crossMe4 = parents[1].makeCopy()
+		crossMe3.crossover(crossMe4)
+		crossMe3.mutate()
+		crossMe4.mutate()
+		nextGen.append(crossMe3)
+		nextGen.append(crossMe4)
+
+		parents = self.selection()
+		crossMe5 = parents[0].makeCopy()
+		crossMe6 = parents[1].makeCopy()
+		crossMe5.crossover(crossMe6)
+		crossMe5.mutate()
+		crossMe6.mutate()
+		nextGen.append(crossMe5)
+		nextGen.append(crossMe6)
+
+		parents = self.selection()
+		crossMe7 = parents[0].makeCopy()
+		crossMe8 = parents[1].makeCopy()
+		crossMe7.crossover(crossMe8)
+		crossMe7.mutate()
+		crossMe8.mutate()
+		nextGen.append(crossMe7)
+		nextGen.append(crossMe8)
+
+		parents = self.selection()
+		crossMe9 = parents[0].makeCopy()
+		crossMe10 = parents[1].makeCopy()
+		crossMe9.crossover(crossMe10)
+		crossMe9.mutate()
+		crossMe10.mutate()
+		nextGen.append(crossMe9)
 
 		random.shuffle(nextGen)
 		self.children = nextGen
