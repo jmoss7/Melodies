@@ -23,6 +23,8 @@ class MyLayout(Widget):
             self.ids.numnotes_label.text = "Num Notes: " + value
         elif input_id == "input_bars_id":
             self.ids.bars_label.text = "Num Bars: " + value
+        elif input_id == "spinner_instrument_id":
+            self.ids.instrument_label.text = "Instrument: " + value
         else:
             print("you suck")
 
@@ -32,12 +34,14 @@ class MyLayout(Widget):
         shutil.copyfile(MELODY_FILENAME, "saved_melody_" + str(MELODY_SAVE_NUMBER) + ".mid")
         MELODY_SAVE_NUMBER += 1
 
-    def main(self, key, scale, octave, num_notes, num_bars):
+    def main(self, key, scale, octave, num_notes, num_bars, instrument):
+        print("Instrument: ", instrument)
+        selected_instrument = instrument
         scale = scale.lower()
         key = key.lower()
         key = key.capitalize()
 
-        if scale == 'choose scale':
+        if scale == 'choose scale' or scale == 'Random':
             scale = ""
 
         try:
@@ -45,15 +49,17 @@ class MyLayout(Widget):
         except:
             octave = -2
 
-        if key == 'Choose key':
+        if key == 'Choose key' or key == 'Random':
             key = ""
 
         try:
             bars = int(num_bars)
         except:
             bars = -1
-
-        m = createMelody(bpm=100, scale=scale, octave=octave, key_sig=key, bars=bars)
+        if instrument == 'Choose Instrument' or instrument == 'Random':
+            m = createMelody(-3, bpm=100, scale=scale, octave=octave, key_sig=key, bars=bars)
+        else:
+            m = createMelody(getMIDINumber(selected_instrument), bpm=100, scale=scale, octave=octave, key_sig=key, bars=bars)
         print(m)
 
         m.generateMIDI()
