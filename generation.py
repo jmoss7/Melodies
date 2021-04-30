@@ -54,7 +54,22 @@ class Generation:
 	def getProbabilities(self):
 		return self.probabilities
 
-	# Finds total fitness value of ratings
+
+
+    # Creates first generation
+    # ******** self.children MUST BE EMPTY LIST *********
+    # 1) Pick random instrument
+    # 2) create 10 children with randomized melody from that same instrument
+    # 3) append each child to self.children
+	def createFirstGenWith10(self, scale, octave, key, bars):
+		print("Creating first generation...")
+		randInstr = chooseRandomInstrument(INSTRUMENT_NP_NS_WITHOUT_CATEGORY)
+		for i in range(10):
+			m = createMelody(instrument=randInstr, bpm=100, scale=scale, octave=octave, key_sig=key, bars=bars)
+			self.children.append(Child(m))
+
+
+	# Finds total fitness value of all ratings in generation
 	def calculateTotalRating(self):
 		total = 0
 		for c in self.children:
@@ -90,6 +105,12 @@ class Generation:
 
 
 	# Assign ratings (fitness) to each child in the current generation
+	# For each melody in generation:
+	#	1) Plays current melody, saving over the old 'out.mid' and 'temp.wav'
+	#   2) Asks for user to give 1-10 rating.
+	#	3) Saves index of highest-rated melody to self.topRatingIdx
+	#	4) Sets rating attribute of current child
+	# NOTE: Should check if rating given is not 'r', 'replay', or 1-10 int
 	def giveRatings(self):
 		print("Rate each melody from 1 to 10.")
 		count = 0
@@ -107,10 +128,6 @@ class Generation:
 				print("Replaying melody %d ..." % count)
 				playWAVkivy("temp.wav")
 				curOption = input("Rate this melody 1-10 or type 'replay' to replay: ")
-			# ********** NEED ERROR CHECKING HERE *************
-			# if option is not int from 1-10, error
-			# else set rating of current melody
-			# save index of highest-rated melody
 			curRating = float(int(curOption))
 			if curRating > highestRating:
 				highestRating = curRating
@@ -143,6 +160,7 @@ class Generation:
 			return Child(self.getChildren()[-1].getData().duplicate())
 
 
+	# NOT IN USE, using advanceToNextGenWith10 instead
 	# advance to next gen with 5 new children:
 	#	selection:
 	#		1) select top rated melody and create new child from it + mutate
@@ -245,7 +263,7 @@ class Generation:
 		crossMe9.crossover(crossMe10)
 		crossMe9.mutate()
 		crossMe10.mutate()
-		nextGen.append(crossMe9)
+		nextGen.append(random.choice((crossMe9, crossMe10)))
 
 		random.shuffle(nextGen)
 		self.children = nextGen
