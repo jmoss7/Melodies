@@ -1,4 +1,6 @@
 from melody import *
+from note import Note
+from general import *
 import random
 
 # midi mappings from C4 to B4

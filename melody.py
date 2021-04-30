@@ -121,7 +121,7 @@ class Melody:
         self.instrument = newInstrument
         self.modified = True
 
-    def setOctave(self, newOctave: int):
+    def setOctave(self, newOctave: int, transposeExisting: bool = True):
         """ Sets the octave that the melody's notes are based on and
             if the melody already has notes, transposes the notes
             based on that new octave """
@@ -130,14 +130,15 @@ class Melody:
             if self.octave == newOctave:
                 return
 
-            for n in self.sequence:
-                # Increase (or decrease) octave to newOctave
-                n.incrementOctave(newOctave - self.octave)
+            if transposeExisting:
+                for n in self.sequence:
+                    # Increase (or decrease) octave to newOctave
+                    n.incrementOctave(newOctave - self.octave)
 
         self.octave = newOctave
         self.modified = True
 
-    def setScale(self, newScale: str):
+    def setScale(self, newScale: str, transposeExisting: bool = True):
         """ Sets the musical scale asociated with the melody and if the
             melody already contains notes, transposes the notes to the
             new musical scale (if possible) """
@@ -146,35 +147,36 @@ class Melody:
             if self.scale == newScale:
                 return
 
-            oldScaleKeys = scales.generate_scale(
-                self.keySig, self.scale, self.octave)
-            newScaleKeys = scales.generate_scale(
-                self.keySig, newScale, self.octave)
+            if transposeExisting:
+                oldScaleKeys = scales.generate_scale(
+                    self.keySig, self.scale, self.octave)
+                newScaleKeys = scales.generate_scale(
+                    self.keySig, newScale, self.octave)
 
-            if len(oldScaleKeys) != len(newScaleKeys):
-                # For now, this function only works when scales have same
-                # number of notes
-                return
+                if len(oldScaleKeys) != len(newScaleKeys):
+                    # For now, this function only works when scales have same
+                    # number of notes
+                    return
 
-            # Get the difference between the new MIDI number and the old one
-            diff = [newScaleKeys[i] - oldScaleKeys[i]
-                    for i in range(len(oldScaleKeys))]
+                # Get the difference between the new MIDI number and the old
+                diff = [newScaleKeys[i] - oldScaleKeys[i]
+                        for i in range(len(oldScaleKeys))]
 
-            oldDict = {}
+                oldDict = {}
 
-            for i in range(len(oldScaleKeys)):
-                oldDict[oldScaleKeys[i]] = i
+                for i in range(len(oldScaleKeys)):
+                    oldDict[oldScaleKeys[i]] = i
 
-            for n in self.sequence:
-                # Get the index of the note in its original scale
-                diffIdx = oldDict[n.getMidiNumber()]
+                for n in self.sequence:
+                    # Get the index of the note in its original scale
+                    diffIdx = oldDict[n.getMidiNumber()]
 
-                n.semitoneChange(diff[diffIdx])
+                    n.semitoneChange(diff[diffIdx])
 
         self.scale = newScale
         self.modified = True
 
-    def setKeySignature(self, newKeySig: str):
+    def setKeySignature(self, newKeySig: str, transposeExisting: bool = True):
         """ Sets the key of the melody and if the melody already contains
             notes, transposes the notes to the new key """
 
@@ -182,19 +184,20 @@ class Melody:
             if self.keySig == newKeySig:
                 return
 
-            newKeySig = flatsToSharps(newKeySig)
-            allKeys = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#",
-                       "A", "A#", "B"]
+            if transposeExisting:
+                sharpKey = flatsToSharps(newKeySig)
+                allKeys = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#",
+                           "A", "A#", "B"]
 
-            # delta is the amount of semitones up or down the new key is
-            # from the old key (Note: This will always assume a key change
-            # will be from a lower key to a higher key, so to key change
-            # down from C to B, user must first change key and then lower
-            # the octave by 1
-            delta = allKeys.index(newKeySig) - allKeys.index(self.keySig)
+                # delta is the amount of semitones up or down the new key is
+                # from the old key (Note: This will always assume a key change
+                # will be from a lower key to a higher key, so to key change
+                # down from C to B, user must first change key and then lower
+                # the octave by 1
+                delta = allKeys.index(sharpKey) - allKeys.index(self.keySig)
 
-            for n in self.sequence:
-                n.semitoneChange(delta)
+                for n in self.sequence:
+                    n.semitoneChange(delta)
 
         self.keySig = newKeySig
         self.modified = True
@@ -235,7 +238,7 @@ class Melody:
         self.modified = True
         return n
 
-    def generateMIDI(self):
+    def generateMIDI(self, tpb: int = TICKS_PER_BEAT):
         """ Build the MIDI file based on mido library specifications """
 
         if len(self.file.tracks) > 0:  # If this has been generated before
@@ -244,7 +247,7 @@ class Melody:
 
             self.file.tracks.clear()
         else:
-            self.file.ticks_per_beat = TICKS_PER_BEAT
+            self.file.ticks_per_beat = tpb
 
         track = MidiTrack()  # Track to hold a single melody
         self.file.tracks.append(track)
@@ -264,7 +267,8 @@ class Melody:
                                  key=keyToMIDISig(self.keySig, self.scale)))
 
         for i in range(self.numNotes):
-            noteLen = self.sequence[i].getLengthTime(TICKS_PER_BEAT)
+            noteLen = self.sequence[i].getLengthTime(self.file.ticks_per_beat,
+                      int((1 / self.timeSig[1]) * SMALLEST_NOTE))
 
             # Tell MIDI file to play note right after previous note
             track.append(Message('note_on',
