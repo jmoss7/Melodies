@@ -1,16 +1,10 @@
 import random
-import melody
+from general import *
 
 # Array of different note lengths where repeats indicate probability of
 # note being chosen by random (quarter note has highest probability)
 # (Note: This currently only contains regular notes (no dotted notes),
 # but this can be changed in the future)
-possibleNotes = ([melody.THIRTY_SECOND_NOTE] +  # 1% Chance for 1/32th Note
-                ([melody.SIXTEENTH_NOTE] * 10) +  # 10% Chance for 1/16th Note
-                ([melody.EIGHTH_NOTE] * 18) +  # 18% Chance for 1/8th Note
-                ([melody.QUARTER_NOTE] * 37) +  # 37% Chance for 1/4th Note
-                ([melody.HALF_NOTE] * 23) +  # 23% Chance for 1/2th Note
-                ([melody.WHOLE_NOTE] * 11))  # 11% Chance for Whole Note
 
 def getRandomStructure(numBars: int, numNotes: int):
     """ Returns a random array of integers of length 'numNotes' that spans over
@@ -25,7 +19,7 @@ def getRandomStructure(numBars: int, numNotes: int):
     # for the music to produce 16 16th notes as opposed to one half
     # note and 15 32th notes
 
-    if numNotes > (numBars * melody.SMALLEST_NOTE):
+    if numNotes > (numBars * SMALLEST_NOTE):
         "Should be error, but for now..."
         return []
 
@@ -33,38 +27,42 @@ def getRandomStructure(numBars: int, numNotes: int):
     structure = []
 
     # Amount of notes of size SMALLEST_NOTE left to be filled in the melody
-    roomLeft = numBars * melody.SMALLEST_NOTE
+    roomLeft = numBars * SMALLEST_NOTE
 
-    # Copy of possibleNotes array to allow for mutation of array by for loop
-    pn = possibleNotes.copy()
+    # Possible note lengths
+    pn = [SIXTEENTH_NOTE, DOTTED_SIXTEENTH_NOTE, EIGHTH_NOTE,
+          DOTTED_EIGHTH_NOTE, QUARTER_NOTE, DOTTED_QUARTER_NOTE, HALF_NOTE,
+          DOTTED_HALF_NOTE, WHOLE_NOTE, DOTTED_WHOLE_NOTE]
+    weights = [1, 5, 10, 7, 25, 20, 15, 5, 10, 2]
 
     for n in range(numNotes):
-        if n == numNotes - 1:
-            # For last note, just take rest of the melody's length up
-            structure.append(roomLeft)
+        while len(pn) > 0 and (roomLeft - (numNotes - n - 1)) < pn[-1]:
+            # Condense possible notes array so that we only randomly choose
+            # a length of a note that is possible to fit into melody
+            # while leaving room for remaining notes
+            pn.pop()
+            weights.pop()
+
+            if len(pn) == 0:
+                # Only a 1/32th note can fit
+                break
+
+        if len(pn) > 0:
+            length = random.choices(pn, weights=weights, k=1)
         else:
-            while (roomLeft - (numNotes - n - 1)) < pn[-1]:
-                # Condense possible notes array so that we only randomly choose
-                # a length of a note that is possible to fit into melody
-                # while leaving room for remaining notes
-                pn.pop()
+            length = [THIRTY_SECOND_NOTE]
 
-                if len(pn) == 0:
-                    # In reality, this should return an error. But right now...
-                    return []
+        roomLeft -= length[0]
+        structure.append(length[0])
 
-            length = random.choice(pn)
-            roomLeft -= length
-            structure.append(length)
-
-    return structure
+    return structure, roomLeft
 
 def getEqualNoteStructure(numBars: int, numNotes: int):
     """ Returns an array of integers of length 'numNotes' where each integer
         is (roughly) equal length and the notes (when played) spans over
         'numBars' worth of music """
 
-    if numNotes > (numBars * melody.SMALLEST_NOTE):
+    if numNotes > (numBars * SMALLEST_NOTE):
         "Should be error, but for now..."
         return []
 
@@ -73,10 +71,10 @@ def getEqualNoteStructure(numBars: int, numNotes: int):
 
     # Amount of notes of length ((bars * SMALLEST_NOTE) // numNotes) that
     # the structure will have
-    floorNotes = numNotes - ((numBars * melody.SMALLEST_NOTE) % numNotes)
+    floorNotes = numNotes - ((numBars * SMALLEST_NOTE) % numNotes)
 
     # The length of each note so that each note is roughly the same length
-    equalLen = (numBars * melody.SMALLEST_NOTE) // numNotes
+    equalLen = (numBars * SMALLEST_NOTE) // numNotes
 
     for i in range(numNotes):
         if i >= floorNotes:
