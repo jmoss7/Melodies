@@ -59,7 +59,7 @@ class MyLayout(Widget):
         if instrument == 'Choose Instrument' or instrument == 'Random':
             m = createMelody(-3, bpm=100, scale=scale, octave=octave, key_sig=key, bars=bars)
         else:
-            m = createMelody(getMIDINumber(selected_instrument), bpm=100, scale="pentatonic", octave=octave, key_sig=key, bars=bars)
+            m = createMelody(getMIDINumber(selected_instrument), bpm=100, scale=scale, octave=octave, key_sig=key, bars=bars)
         print(m)
 
         m.generateMIDI()
