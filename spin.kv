@@ -2,7 +2,16 @@
     BoxLayout:
         orientation: "vertical"
         size: root.width - 200, root.height - 200
+        pos: 0, 0
+        Label:
+            id: title_label
+            text: "Melodies"
+            font_size: 64
+    BoxLayout:
+        orientation: "vertical"
+        size: root.width - 200, root.height - 200
         pos: 100, 100
+
         Label:
             id: key_label
             text: "Key"
@@ -62,8 +71,80 @@
             text: 'Generate Chord'
             on_press: root.main(spinner_key_id.text, spinner_scale_id.text, spinner_octave_id.text, input_numnotes_id.text, input_bars_id.text)
             on_release: print("Chord MIDI file written to out.mid!")
-
         Button:
             text: 'Save Melody'
             on_press: root.save_melody()
             on_release: print("Melody saved!")
+
+        Label:
+            id: ratings_label
+            text: "Ratings"
+            font_size: 32
+
+    BoxLayout:
+        orientation: "horizontal"
+        size: root.width - 200, root.height - 200
+        pos: 100, 50
+
+        Button:
+            id: rating_1_id
+            text: '1'
+            size_hint: (.1, .1)
+            on_press: root.update_rating("1")
+            on_release: print("Chord MIDI file written to out.mid!")
+
+        Button:
+            text: '2'
+            size_hint: (.1, .1)
+            on_press: root.update_rating("2")
+            on_release: print("Chord MIDI file written to out.mid!")
+
+        Button:
+            text: '3'
+            size_hint: (.1, .1)
+            on_press: root.update_rating("3")
+            on_release: print("Chord MIDI file written to out.mid!")
+
+        Button:
+            text: '4'
+            size_hint: (.1, .1)
+            on_press: root.update_rating("4")
+            on_release: print("Chord MIDI file written to out.mid!")
+
+        Button:
+            text: '5'
+            size_hint: (.1, .1)
+            on_press: root.update_rating("5")
+            on_release: print("Chord MIDI file written to out.mid!")
+
+        Button:
+            text: '6'
+            size_hint: (.1, .1)
+            on_press: root.update_rating("6")
+            on_release: print("Chord MIDI file written to out.mid!")
+
+        Button:
+            text: '7'
+            size_hint: (.1, .1)
+            on_press: root.update_rating("7")
+            on_release: print("Chord MIDI file written to out.mid!")
+
+        Button:
+            text: '8'
+            size_hint: (.1, .1)
+            on_press: root.update_rating("8")
+            on_release: print("Chord MIDI file written to out.mid!")
+
+        Button:
+            text: '9'
+            size_hint: (.1, .1)
+            on_press: root.update_rating("9")
+            on_release: print("Chord MIDI file written to out.mid!")
+
+        Button:
+            text: '10'
+            size_hint: (.1, .1)
+            on_press: root.update_rating("10")
+            on_release: print("Chord MIDI file written to out.mid!")
+
+
