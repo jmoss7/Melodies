@@ -52,7 +52,6 @@ class MyLayout(Widget):
             m = curChild.getData()
             m.generateMIDI()
             m.saveMelodyAs('out.mid')
-            print("Playing Melody %d..." % count)
             midiToWAV("out.mid", "temp.wav")
             playWAVkivy("temp.wav")
 
