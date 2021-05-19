@@ -49,7 +49,7 @@ class MyLayout(Widget):
         global_vars.rating_index += 1
 
         if global_vars.rating_index <= 9:
-            m = child.getData()
+            m = curChild.getData()
             m.generateMIDI()
             m.saveMelodyAs('out.mid')
             print("Playing Melody %d..." % count)
@@ -112,7 +112,7 @@ class MyLayout(Widget):
         # ********* ADD LATER: Option to change instrument *************
 
 
-        m = gen1.getChildren()[rating_index].getData()
+        m = gen1.getChildren()[global_vars.rating_index].getData()
         m.generateMIDI()
         m.saveMelodyAs('out.mid')
         midiToWAV("out.mid", "temp.wav")
