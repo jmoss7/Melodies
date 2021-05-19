@@ -11,7 +11,7 @@ from child import Child
 
 from numpy.random import choice
 
-from global_vars import *
+import global_vars
 
 
 
@@ -40,14 +40,15 @@ class MyLayout(Widget):
 
     # rates current melody increments global index
     def giveRating(self, curRating):
-        curChild = gen1.getChildren()[rating_index]
+
+        curChild = global_vars.gen1.getChildren()[global_vars.rating_index]
 
         curRating = float(int(curRating))
         curChild.setRating(curRating)
 
-        rating_index += 1
+        global_vars.rating_index += 1
 
-        if rating_index <= 9:
+        if global_vars.rating_index <= 9:
             m = child.getData()
             m.generateMIDI()
             m.saveMelodyAs('out.mid')
@@ -56,11 +57,11 @@ class MyLayout(Widget):
             playWAVkivy("temp.wav")
 
         else:
-            gen1.calculateTotalRating()
-            gen1.normalizeFitness()
-            gen1.findHighest()
-            gen1.advanceToNextGenWith10()
-            rating_index = 0
+            global_vars.gen1.calculateTotalRating()
+            global_vars.gen1.normalizeFitness()
+            global_vars.gen1.findHighest()
+            global_vars.gen1.advanceToNextGenWith10()
+            global_vars.rating_index = 0
 
 
 
