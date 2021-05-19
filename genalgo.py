@@ -103,16 +103,16 @@ class MyLayout(Widget):
         # **************** MAKE SURE TO CHECK BAD INPUT **************
         # Begin genetic algorithm
         # create the first generation of melodies
-        gen1 = Generation([], 1)
+        global_vars.gen1 = Generation([], 1)
         print("Creating first generation...........")
-        gen1.createFirstGenWith10(scale, octave, key, bars)
+        global_vars.gen1.createFirstGenWith10(scale, octave, key, bars)
         # Begin rating each of the 10 initial melodies
         # rate each melody
         # sum total rating and normalize for fitness probabilities
         # ********* ADD LATER: Option to change instrument *************
 
 
-        m = gen1.getChildren()[global_vars.rating_index].getData()
+        m = global_vars.gen1.getChildren()[global_vars.rating_index].getData()
         m.generateMIDI()
         m.saveMelodyAs('out.mid')
         midiToWAV("out.mid", "temp.wav")
