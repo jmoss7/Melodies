@@ -111,7 +111,7 @@ class Generation:
 		highest_rating = 0
 		curIdx = 0
 		for child in self.getChildren():
-			curRating = child.getData().getRating()
+			curRating = child.getRating()
 			if curRating >= highest_rating:
 				highest_rating = curRating
 				highest_idx = curIdx

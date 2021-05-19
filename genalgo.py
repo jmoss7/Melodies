@@ -49,6 +49,7 @@ class MyLayout(Widget):
         global_vars.rating_index += 1
 
         if global_vars.rating_index <= 9:
+            curChild = global_vars.gen1.getChildren()[global_vars.rating_index]
             m = curChild.getData()
             m.generateMIDI()
             m.saveMelodyAs('out.mid')
