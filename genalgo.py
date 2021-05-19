@@ -59,7 +59,7 @@ class MyLayout(Widget):
 
         curRating = float(int(curOption))
         curChild.setRating(curRating)
-        return
+        rating_index += 1
 
 
 
