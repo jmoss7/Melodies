@@ -116,7 +116,7 @@ class Generation:
 				highest_rating = curRating
 				highest_idx = curIdx
 			curIdx += 1
-		self.topRatingIdx == highest_idx
+		self.topRatingIdx = highest_idx
 
 
 	# Assign ratings (fitness) to each child in the current generation
