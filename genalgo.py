@@ -11,6 +11,8 @@ from child import Child
 
 from numpy.random import choice
 
+from global_vars import rating_index
+
 
 
 Builder.load_file('spin.kv')
@@ -32,6 +34,37 @@ class MyLayout(Widget):
 
     def save_melody(self):
         return
+
+
+
+
+    # rates current melody, plays next melody
+    def giveRating(self, curgen):
+        curChild = curgen.getChildren()[rating_index]
+        m = curChild.getData()
+        m.generateMIDI()
+        m.saveMelodyAs('out.mid')
+        print("Playing Melody %d..." % (global_vars.rating_index + 1))
+        midiToWAV("out.mid", "temp.wav")
+        playWAVkivy("temp.wav")
+
+        # give kivy rating here, idk how to do that lol
+        # for now its the same, just take it out and handle however
+        curOption = input("Rate melody 1-10 or type 'r' or 'replay' to replay: ")
+        while (curOption == "replay" or curOption == "r"):
+            print("Replaying melody %d..." % (global_vars.rating_index + 1))
+            playWAVkivy("temp.wav")
+            curOption = input("Rate melody 1-10 or type 'r' or 'replay' to replay: ")
+
+
+        curRating = float(int(curOption))
+        curChild.setRating(curRating)
+        return
+
+
+
+
+
 
     def main(self, key, scale, octave, num_notes, num_bars):
         scale = scale.lower()

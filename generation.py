@@ -104,6 +104,21 @@ class Generation:
 		self.isSorted = True
 
 
+
+	# finds and sets topRatingIdx (must all be rated first!!!!)
+	def findHighest(self):
+		highest_idx = 0
+		highest_rating = 0
+		curIdx = 0
+		for child in self.getChildren():
+			curRating = child.getData().getRating()
+			if curRating >= highest_rating:
+				highest_rating = curRating
+				highest_idx = curIdx
+			curIdx += 1
+		self.topRatingIdx == highest_idx
+
+
 	# Assign ratings (fitness) to each child in the current generation
 	# For each melody in generation:
 	#	1) Plays current melody, saving over the old 'out.mid' and 'temp.wav'
