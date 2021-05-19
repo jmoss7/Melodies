@@ -11,7 +11,7 @@ from child import Child
 
 from numpy.random import choice
 
-from global_vars import rating_index
+from global_vars import *
 
 
 
@@ -68,6 +68,8 @@ class MyLayout(Widget):
 
 
     def main(self, key, scale, octave, num_notes, num_bars):
+        global rating_index, gen1
+
         scale = scale.lower()
         key = key.lower()
         key = key.capitalize()
@@ -112,7 +114,6 @@ class MyLayout(Widget):
         m = gen1.getChildren()[rating_index].getData()
         m.generateMIDI()
         m.saveMelodyAs('out.mid')
-        print("Playing Melody %d..." % count)
         midiToWAV("out.mid", "temp.wav")
         playWAVkivy("temp.wav")
 
