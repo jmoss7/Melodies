@@ -60,8 +60,16 @@ class MyLayout(Widget):
             global_vars.gen1.calculateTotalRating()
             global_vars.gen1.normalizeFitness()
             global_vars.gen1.findHighest()
+            print(global_vars.gen1.getTopRatingIdx())
             global_vars.gen1.advanceToNextGenWith10()
             global_vars.rating_index = 0
+            curChild = global_vars.gen1.getChildren()[global_vars.rating_index]
+            m = curChild.getData()
+            m.generateMIDI()
+            m.saveMelodyAs('out.mid')
+            midiToWAV("out.mid", "temp.wav")
+            playWAVkivy("temp.wav")
+
 
 
 
