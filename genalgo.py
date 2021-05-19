@@ -38,28 +38,29 @@ class MyLayout(Widget):
 
 
 
-    # rates current melody, plays next melody
-    def giveRating(self, curgen):
-        curChild = curgen.getChildren()[rating_index]
-        m = curChild.getData()
-        m.generateMIDI()
-        m.saveMelodyAs('out.mid')
-        print("Playing Melody %d..." % (global_vars.rating_index + 1))
-        midiToWAV("out.mid", "temp.wav")
-        playWAVkivy("temp.wav")
+    # rates current melody increments global index
+    def giveRating(self, curRating):
+        curChild = gen1.getChildren()[rating_index]
 
-        # give kivy rating here, idk how to do that lol
-        # for now its the same, just take it out and handle however
-        curOption = input("Rate melody 1-10 or type 'r' or 'replay' to replay: ")
-        while (curOption == "replay" or curOption == "r"):
-            print("Replaying melody %d..." % (global_vars.rating_index + 1))
-            playWAVkivy("temp.wav")
-            curOption = input("Rate melody 1-10 or type 'r' or 'replay' to replay: ")
-
-
-        curRating = float(int(curOption))
+        curRating = float(int(curRating))
         curChild.setRating(curRating)
+
         rating_index += 1
+
+        if rating_index <= 9:
+            m = child.getData()
+            m.generateMIDI()
+            m.saveMelodyAs('out.mid')
+            print("Playing Melody %d..." % count)
+            midiToWAV("out.mid", "temp.wav")
+            playWAVkivy("temp.wav")
+
+        else:
+            gen1.calculateTotalRating()
+            gen1.normalizeFitness()
+            gen1.findHighest()
+            gen1.advanceToNextGenWith10()
+            rating_index = 0
 
 
 
@@ -105,7 +106,17 @@ class MyLayout(Widget):
         # Begin rating each of the 10 initial melodies
         # rate each melody
         # sum total rating and normalize for fitness probabilities
-        # ********* ADD LATER: Option to change instrument ************* 
+        # ********* ADD LATER: Option to change instrument *************
+
+
+        m = gen1.getChildren()[rating_index].getData()
+        m.generateMIDI()
+        m.saveMelodyAs('out.mid')
+        print("Playing Melody %d..." % count)
+        midiToWAV("out.mid", "temp.wav")
+        playWAVkivy("temp.wav")
+
+"""
         print("Generated 10 melodies. Now playing gen 1.")
         gen1.giveRatings()
         gen1.calculateTotalRating()
@@ -121,6 +132,7 @@ class MyLayout(Widget):
             gen1.normalizeFitness()
             option = input("[a]dvance to next gen? or [s]top: ")
         print("Finished after %d generations." % gen1.getGen())
+"""
 
 
 
