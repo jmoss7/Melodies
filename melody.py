@@ -23,7 +23,9 @@ class Melody:
         if not contents:
             self.sequence = []
         else:
-            self.sequence = contents
+            self.sequence = []
+            for n in contents:
+                self.sequence.append(n.duplicate())
 
         self.length = sum([len(x) for x in contents])
 
@@ -63,6 +65,8 @@ class Melody:
                                            str(elem.getOctave()))
             header += "{0:^8} ".format(len(elem))
             header += "{0:^9}\n".format(elem.getVelocity())
+
+        header += "Total Length: {}".format(self.length)
 
         return header
 
@@ -336,20 +340,21 @@ class Melody:
             noteToChange = self.sequence[selfIdx-1]
             originalLength = len(noteToChange)
             extraLength = selfCurPos - swapPos
-            noteToChange.setLength(len(noteToChange) - extraLength)
+            noteToChange.setLength(originalLength - extraLength)
             splicedNote = noteToChange.duplicate()
-            splicedNote.setLength(originalLength - len(splicedNote))
+            splicedNote.setLength(extraLength)
             self.sequence.insert(selfIdx, splicedNote)
             self.numNotes += 1
 
         # Do the same as above but with reference melody
         if refCurPos != swapPos:
+
             noteToChange = ref.sequence[refIdx-1]
             originalLength = len(noteToChange)
             extraLength = refCurPos - swapPos
-            noteToChange.setLength(len(noteToChange) - extraLength)
+            noteToChange.setLength(originalLength - extraLength)
             splicedNote = noteToChange.duplicate()
-            splicedNote.setLength(originalLength - len(splicedNote))
+            splicedNote.setLength(extraLength)
             ref.sequence.insert(refIdx, splicedNote)
             ref.numNotes += 1
 
@@ -369,6 +374,7 @@ class Melody:
                 noteFromRef = ref.removeNote(refIdx)
                 self.addNote(noteFromRef)
                 refNotesToSwap -= 1
+
 
         self.modified = True
         ref.modified = True
