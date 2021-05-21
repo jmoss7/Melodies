@@ -1,3 +1,4 @@
+import shutil
 from play import *
 from melodygen import *
 from melodystack import MelodyStack
@@ -5,15 +6,13 @@ from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.lang import Builder
 from kivy.uix.button import Button
-
 from generation import Generation
 from child import Child
-
 from numpy.random import choice
-
 import global_vars
 
-
+MELODY_SAVE_NUMBER: int = 1
+MELODY_FILENAME: str = "../temp/out.mid"
 
 Builder.load_file('spin.kv')
 
@@ -33,7 +32,10 @@ class MyLayout(Widget):
             print("you suck")
 
     def save_melody(self):
-        return
+        global MELODY_SAVE_NUMBER
+        global MELODY_FILENAME
+        shutil.copyfile(MELODY_FILENAME, "../saved/saved_melody_" + str(MELODY_SAVE_NUMBER) + ".mid")
+        MELODY_SAVE_NUMBER += 1
 
 
 
@@ -52,9 +54,9 @@ class MyLayout(Widget):
             curChild = global_vars.gen1.getChildren()[global_vars.rating_index]
             m = curChild.getData()
             m.generateMIDI()
-            m.saveMelodyAs('out.mid')
-            midiToWAV("out.mid", "temp.wav")
-            playWAVkivy("temp.wav")
+            m.saveMelodyAs('../temp/out.mid')
+            midiToWAV("../temp/out.mid", "../temp/temp.wav")
+            playWAVkivy("../temp/temp.wav")
 
         else:
             global_vars.gen1.calculateTotalRating()
@@ -66,9 +68,9 @@ class MyLayout(Widget):
             curChild = global_vars.gen1.getChildren()[global_vars.rating_index]
             m = curChild.getData()
             m.generateMIDI()
-            m.saveMelodyAs('out.mid')
-            midiToWAV("out.mid", "temp.wav")
-            playWAVkivy("temp.wav")
+            m.saveMelodyAs('../temp/out.mid')
+            midiToWAV("../temp/out.mid", "../temp/temp.wav")
+            playWAVkivy("../temp/temp.wav")
 
 
 
@@ -122,9 +124,9 @@ class MyLayout(Widget):
 
         m = global_vars.gen1.getChildren()[global_vars.rating_index].getData()
         m.generateMIDI()
-        m.saveMelodyAs('out.mid')
-        midiToWAV("out.mid", "temp.wav")
-        playWAVkivy("temp.wav")
+        m.saveMelodyAs('../saved/out.mid')
+        midiToWAV("../saved/out.mid", "../temp/temp.wav")
+        playWAVkivy("../temp/temp.wav")
 
 """
         print("Generated 10 melodies. Now playing gen 1.")
