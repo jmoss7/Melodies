@@ -242,15 +242,15 @@ class Melody:
     def generateMIDI(self):
         """ Build the MIDI file based on mido library specifications """
 
-        self.file.ticks_per_beat = TICKS_PER_BEAT
-        track = MidiTrack()  # Track to hold a single melody
-
         if len(self.file.tracks) > 0:  # If this has been generated before
             if not self.modified:  # If melody has not been modified, leave it
                 return
 
             self.file.tracks.clear()
+        else:
+            self.file.ticks_per_beat = TICKS_PER_BEAT
 
+        track = MidiTrack()  # Track to hold a single melody
         self.file.tracks.append(track)
 
         # Tell MIDI file to set instrument to self.instrument

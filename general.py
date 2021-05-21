@@ -24,13 +24,17 @@ DOTTED_WHOLE_NOTE = WHOLE_NOTE + HALF_NOTE
 MIN_BARS = 1
 MAX_BARS = 8
 
-def limiter(val: int):
-    """ Caps val so that highest return value is 127 and lowest is 0 """
+def limiter(val: int, low: int = 0, high: int = 127):
+    """ Caps val so that highest return value is high and lowest is low
+        Note: This function is mainly used to make sure that MIDI numbers
+        will be 8-bit, so by default the lower limit = 0 and the higher
+        limit = 127 """
 
-    if val > 127:
-        return 127
-    elif val < 0:
-        return 0
+    if val > high:
+        return high
+
+    if val < low:
+        return low
 
     return val
 
