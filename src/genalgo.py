@@ -78,7 +78,7 @@ class MyLayout(Widget):
 
 
 
-    def main(self, key, scale, octave, num_notes, num_bars):
+    def main(self, key, scale, octave, num_bars):
         global rating_index, gen1
 
         scale = scale.lower()
@@ -96,10 +96,10 @@ class MyLayout(Widget):
         if key == 'choose key':
             key = ""
 
-        try:
+        """try:
             num_notes = int(num_notes)
         except:
-            num_notes = -2
+            num_notes = -2"""
 
         try:
             bars = int(num_bars)
