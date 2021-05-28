@@ -47,8 +47,13 @@ class Melody:
             return "Empty Melody"
 
         header = "------------------------\n"
-        header += "BPM: {}, Time Signature: {}/{}, Key Signature: {}\n".format(
-            self.bpm, self.timeSig[0], self.timeSig[1], self.keySig)
+        header += "BPM: {}, Time Signature: {}/{}\n".format(self.bpm,
+                                                            self.timeSig[0],
+                                                            self.timeSig[1])
+        header += "Key: {}, Scale: {}\n".format(self.keySig,
+                                                self.scale.capitalize())
+        header += "Length: {} ({} measures), # of Notes: {}\n".format(
+                  self.length, self.length // SMALLEST_NOTE, self.numNotes)
         header += "------------------------\n"
         header += "Instrument: {}\n".format(getInstrumentName(
                                             self.instrument))

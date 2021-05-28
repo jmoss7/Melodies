@@ -35,7 +35,6 @@ class MyLayout(Widget):
         MELODY_SAVE_NUMBER += 1
 
     def main(self, key, scale, octave, num_notes, num_bars, instrument):
-        print("Instrument: ", instrument)
         selected_instrument = instrument
         scale = scale.lower()
         key = key.lower()

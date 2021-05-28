@@ -138,14 +138,14 @@ def buildMelodyNotes(m, bars):
     # that there is roughly one note per bar) and SMALLEST_NOTE //
     # OTHER_NOTE (so that each note would be roughly OTHER_NOTE long)
     numNotes = random.randint(4, max(1, bars * (SMALLEST_NOTE //
-                                                   EIGHTH_NOTE)))
+                                                DOTTED_EIGHTH_NOTE)))
     seq = []
-    # randomize notes in scale by choosing {numNotes} random notes\
+    # randomize notes in scale by choosing {numNotes} random notes
     for i in range(numNotes):
         seq.append(random.choice(s))
 
     # randomize length of each notes using getRandomStructure function
-    lengths, barSpace = getRandomStructure(bars, numNotes)
+    lengths, barSpace = getBeatStructure(bars, numNotes)
 
     # add the random notes to generate the melody
     for i in range(numNotes):
