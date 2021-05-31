@@ -28,6 +28,8 @@ class MyLayout(Widget):
             self.ids.bars_label.text = "Num Bars: " + value
         elif input_id == "spinner_instrument_id":
             self.ids.instrument_label.text = "Instrument: " + value
+        elif input_id == "generation_label":
+            self.ids.generation_label.text = "Generation: " + value
         else:
             print("you suck")
 
@@ -65,6 +67,8 @@ class MyLayout(Widget):
             print(global_vars.gen1.getTopRatingIdx())
             global_vars.gen1.advanceToNextGenWith10()
             global_vars.rating_index = 0
+            global_vars.generation_number += 1
+            self.update_label("generation_label", str(global_vars.generation_number))
             curChild = global_vars.gen1.getChildren()[global_vars.rating_index]
             m = curChild.getData()
             m.generateMIDI()
@@ -123,6 +127,8 @@ class MyLayout(Widget):
         m.saveMelodyAs('../saved/out.mid')
         midiToWAV("../saved/out.mid", "../temp/temp.wav")
         playWAVkivy("../temp/temp.wav")
+        global_vars.generation_number = 1
+        self.update_label("generation_label", str(global_vars.generation_number))
 
 """
         print("Generated 10 melodies. Now playing gen 1.")
