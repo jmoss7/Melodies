@@ -1,7 +1,7 @@
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 
 # Number of clock ticks for each beat (best if large and must be divisible by
-# SMALLEST_NOTE (beat = 1/4))
+# SMALLEST_NOTE (beat = 1/(denominator of the time signature))
 TICKS_PER_BEAT = 480
 
 SMALLEST_NOTE = 32  # 1/32 note is smallest note possible for Melodies
@@ -80,4 +80,7 @@ def sharpsToFlats(key: str):
                           "A#": "Bb"}
         return conversionDict[key]
 
-    return  key
+    return key
+
+def ticksToLength(ticks: int, timeRes: int, beatLength: int):
+    return ticks // (timeRes // beatLength)

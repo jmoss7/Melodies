@@ -1,4 +1,6 @@
 from melody import *
+from note import Note
+from general import *
 import random
 
 # midi mappings from C4 to B4
@@ -48,8 +50,13 @@ keys_0 = {
 scales = {
 	"major": [0, 2, 4, 5, 7, 9, 11, 12],
 	"minor": [0, 2, 3, 5, 7, 8, 10, 12],
-	"harmonic minor": [0, 2, 3, 5, 7, 8, 11, 12]}
-
+	"harmonic minor": [0, 2, 3, 5, 7, 8, 11, 12],
+	"melodic minor": [0, 2, 3, 5, 7, 9, 11, 12],
+	"pentatonic": [0, 2, 5, 7, 9, 12],
+	"whole tone": [0, 2, 4, 6, 8, 12],
+	"chromatic": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+	"blues": [0, 3, 5, 6, 7, 10, 12]
+}
 
 # generates scale from from the given key,scale, & octave
 def generate_scale(key, scale, octave):

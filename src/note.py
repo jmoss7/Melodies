@@ -1,4 +1,4 @@
-from general import limiter, QUARTER_NOTE
+from general import limiter
 
 class Note:
     # Dunder methods (__method__)
@@ -57,11 +57,11 @@ class Note:
                 'E', 'F', 'F#/Gb', 'G',
                 'G#/Ab', 'A', 'A#/Bb', 'B'][order]
 
-    def getLengthTime(self, timeRes: int):
+    def getLengthTime(self, timeRes: int, beatLength: int):
         """ Returns length of a note in units of time (for MIDI message) """
 
-        # Note: a return value of timeRes represents a quarter note
-        return self.length * (timeRes // QUARTER_NOTE)
+        # Note: a return value of timeRes represents a beat
+        return self.length * (timeRes // beatLength)
 
     def setMidiNumber(self, new_nbr):
         """ Sets the MIDI number of the note """
