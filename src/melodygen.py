@@ -145,7 +145,7 @@ def buildMelodyNotes(m, bars):
         seq.append(random.choice(s))
 
     # randomize length of each notes using getRandomStructure function
-    lengths, barSpace = getBeatStructure(bars, numNotes)
+    lengths, barSpace = getEqualStructure(bars, numNotes)
 
     # add the random notes to generate the melody
     for i in range(numNotes):

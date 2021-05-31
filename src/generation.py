@@ -61,11 +61,10 @@ class Generation:
     # 1) Pick random instrument
     # 2) create 10 children with randomized melody from that same instrument
     # 3) append each child to self.children
-	def createFirstGenWith10(self, scale, octave, key, bars):
+	def createFirstGenWith10(self, scale, octave, key, bars, instrument):
 		print("Creating first generation...")
-		randInstr = chooseRandomInstrument(INSTRUMENT_NP_NS_WITHOUT_CATEGORY)
 		for i in range(10):
-			m = createMelody(instrument=randInstr, bpm=100, scale=scale, octave=octave, key_sig=key, bars=bars)
+			m = createMelody(instrument=instrument, bpm=100, scale=scale, octave=octave, key_sig=key, bars=bars)
 			self.children.append(Child(m))
 
 

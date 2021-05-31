@@ -24,10 +24,10 @@ class MyLayout(Widget):
             self.ids.scale_label.text = "Scale: " + value
         elif input_id == "spinner_octave_id":
             self.ids.octave_label.text = "Octave: " + value
-        elif input_id == "input_numnotes_id":
-            self.ids.numnotes_label.text = "Num Notes: " + value
         elif input_id == "input_bars_id":
             self.ids.bars_label.text = "Num Bars: " + value
+        elif input_id == "spinner_instrument_id":
+            self.ids.instrument_label.text = "Instrument: " + value
         else:
             print("you suck")
 
@@ -78,14 +78,14 @@ class MyLayout(Widget):
 
 
 
-    def main(self, key, scale, octave, num_bars):
+    def main(self, key, scale, octave, num_bars, instrument):
         global rating_index, gen1
-
+        selected_instrument = instrument
         scale = scale.lower()
         key = key.lower()
         key = key.capitalize()
 
-        if scale == 'choose scale':
+        if scale == 'choose scale' or scale == 'Random':
             scale = ""
 
         try:
@@ -93,29 +93,25 @@ class MyLayout(Widget):
         except:
             octave = -2
 
-        if key == 'choose key':
+        if key == 'Choose key' or key == 'Random':
             key = ""
-
-        """try:
-            num_notes = int(num_notes)
-        except:
-            num_notes = -2"""
 
         try:
             bars = int(num_bars)
         except:
             bars = -1
 
-
-
-
+        if instrument == 'Choose Instrument' or instrument == 'Random':
+            chosenInstrument = -3
+        else:
+            chosenInstrument = getMIDINumber(instrument)
 
         # **************** MAKE SURE TO CHECK BAD INPUT **************
         # Begin genetic algorithm
         # create the first generation of melodies
         global_vars.gen1 = Generation([], 1)
         print("Creating first generation...........")
-        global_vars.gen1.createFirstGenWith10(scale, octave, key, bars)
+        global_vars.gen1.createFirstGenWith10(scale, octave, key, bars, chosenInstrument)
         # Begin rating each of the 10 initial melodies
         # rate each melody
         # sum total rating and normalize for fitness probabilities
