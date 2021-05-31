@@ -1,4 +1,4 @@
-
+generation_number = None
 
 rating_index = 0
 
