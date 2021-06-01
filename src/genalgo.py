@@ -5,14 +5,9 @@ from melodystack import MelodyStack
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.lang import Builder
-from kivy.uix.button import Button
 from generation import Generation
-from child import Child
-from numpy.random import choice
 import global_vars
 
-prevH = 0
-prevW = 0
 MELODY_SAVE_NUMBER: int = 1
 MELODY_FILENAME_MIDI: str = "../temp/out.mid"
 MELODY_FILENAME_WAV: str = "../temp/temp.wav"
@@ -40,13 +35,15 @@ class MyLayout(Widget):
         global MELODY_SAVE_NUMBER
         global MELODY_FILENAME_MIDI
         global MELODY_FILENAME_WAV
-        shutil.copyfile(MELODY_FILENAME_MIDI, "../saved/saved_melody_" + str(MELODY_SAVE_NUMBER) + ".mid")
-        shutil.copyfile(MELODY_FILENAME_WAV, "../saved/saved_melody_" + str(MELODY_SAVE_NUMBER) + ".wav")
-        MELODY_SAVE_NUMBER += 1
+        try:
+            shutil.copyfile(MELODY_FILENAME_MIDI + "a", "../saved/saved_melody_" + str(MELODY_SAVE_NUMBER) + ".mid")
+            shutil.copyfile(MELODY_FILENAME_WAV, "../saved/saved_melody_" + str(MELODY_SAVE_NUMBER) + ".wav")
+            MELODY_SAVE_NUMBER += 1
+        except:
+            "Unable to save melody"
 
     # rates current melody increments global index
     def giveRating(self, curRating):
-
         curChild = global_vars.gen1.getChildren()[global_vars.rating_index]
 
         curRating = float(int(curRating))
