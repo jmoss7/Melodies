@@ -56,16 +56,31 @@ class Generation:
 
 
 
-    # Creates first generation
+	# Creates first generation
     # ******** self.children MUST BE EMPTY LIST *********
     # 1) Pick random instrument
     # 2) create 10 children with randomized melody from that same instrument
     # 3) append each child to self.children
 	def createFirstGenWith10(self, scale, octave, key, bars, instrument):
 		print("Creating first generation...")
+		finalScale = scale
+		finalOctave = octave
+		finalKey = key
+		finalBars = bars
+		finalInstrument = instrument
+
 		for i in range(10):
-			m = createMelody(instrument=instrument, bpm=100, scale=scale, octave=octave, key_sig=key, bars=bars)
+			m = createMelody(instrument=finalInstrument, bpm=100,
+							 scale=finalScale, octave=finalOctave,
+							 key_sig=finalKey, bars=finalBars)
 			self.children.append(Child(m))
+
+			if i == 0:
+				finalScale = m.getScale()
+				finalOctave = m.getOctave()
+				finalKey = m.getKeySignature()
+				finalBars = len(m) // SMALLEST_NOTE
+				finalInstrument = m.getInstrument()
 
 
 	# Finds total fitness value of all ratings in generation

@@ -11,8 +11,11 @@ from child import Child
 from numpy.random import choice
 import global_vars
 
+prevH = 0
+prevW = 0
 MELODY_SAVE_NUMBER: int = 1
-MELODY_FILENAME: str = "../temp/out.mid"
+MELODY_FILENAME_MIDI: str = "../temp/out.mid"
+MELODY_FILENAME_WAV: str = "../temp/temp.wav"
 
 Builder.load_file('spin.kv')
 
@@ -30,17 +33,16 @@ class MyLayout(Widget):
             self.ids.instrument_label.text = "Instrument: " + value
         elif input_id == "generation_label":
             self.ids.generation_label.text = "Generation: " + value
-        else:
-            print("you suck")
+        elif input_id == "current_label":
+            self.ids.current_label.text = "Melody: " + value
 
     def save_melody(self):
         global MELODY_SAVE_NUMBER
-        global MELODY_FILENAME
-        shutil.copyfile(MELODY_FILENAME, "../saved/saved_melody_" + str(MELODY_SAVE_NUMBER) + ".mid")
+        global MELODY_FILENAME_MIDI
+        global MELODY_FILENAME_WAV
+        shutil.copyfile(MELODY_FILENAME_MIDI, "../saved/saved_melody_" + str(MELODY_SAVE_NUMBER) + ".mid")
+        shutil.copyfile(MELODY_FILENAME_WAV, "../saved/saved_melody_" + str(MELODY_SAVE_NUMBER) + ".wav")
         MELODY_SAVE_NUMBER += 1
-
-
-
 
     # rates current melody increments global index
     def giveRating(self, curRating):
@@ -58,8 +60,9 @@ class MyLayout(Widget):
             m.generateMIDI()
             m.saveMelodyAs('../temp/out.mid')
             midiToWAV("../temp/out.mid", "../temp/temp.wav")
+            global_vars.melody_number += 1
+            self.update_label("current_label", str(global_vars.melody_number))
             playWAVkivy("../temp/temp.wav")
-
         else:
             global_vars.gen1.calculateTotalRating()
             global_vars.gen1.normalizeFitness()
@@ -69,6 +72,8 @@ class MyLayout(Widget):
             global_vars.rating_index = 0
             global_vars.generation_number += 1
             self.update_label("generation_label", str(global_vars.generation_number))
+            global_vars.melody_number = 1
+            self.update_label("current_label", str(global_vars.melody_number))
             curChild = global_vars.gen1.getChildren()[global_vars.rating_index]
             m = curChild.getData()
             m.generateMIDI()
@@ -129,7 +134,8 @@ class MyLayout(Widget):
         playWAVkivy("../temp/temp.wav")
         global_vars.generation_number = 1
         self.update_label("generation_label", str(global_vars.generation_number))
-
+        global_vars.melody_number = 1
+        self.update_label("current_label", str(global_vars.melody_number))
 """
         print("Generated 10 melodies. Now playing gen 1.")
         gen1.giveRatings()
