@@ -6,11 +6,12 @@ from note import Note
 from typing import Tuple, List
 
 # Below are the indices in a track that specific messages will appear
-INSTRUMENT_MSG_IDX = 0  # Should always be first message in track
+NAME_MSG_IDX = 0  # Should always be first message in track
 BPM_MSG_IDX = 1
 TIME_SIG_MSG_IDX = 2
 KEY_SIG_MSG_IDX = 3
-FIRST_NOTE_MSG_IDX = 4  # Should always be +1 of last setup message
+INSTRUMENT_MSG_IDX = 4  # Should always be last message in track before notes
+FIRST_NOTE_MSG_IDX = 5  # Should always be +1 of last setup message
 
 class Melody:
     # Dunder methods (__method__)
@@ -231,7 +232,6 @@ class Melody:
     # Additional functions
     def addNote(self, n: Note):
         """ Appends a Note object to the melody """
-
         self.sequence.append(n)
         self.length += len(n)
         self.numNotes += 1
@@ -261,8 +261,8 @@ class Melody:
         track = MidiTrack()  # Track to hold a single melody
         self.file.tracks.append(track)
 
-        # Tell MIDI file to set instrument to self.instrument
-        track.append(Message('program_change',program=self.instrument, time=0))
+        # Tell MIDI file to set the name of the track to 'Made w/ Melodies'
+        track.append(MetaMessage('track_name', name='Made w/ Melodies'))
 
         # Tell MIDI file to set tempo to BPM (must convert self.bpm to tempo)
         track.append(MetaMessage('set_tempo', tempo=bpm2tempo(self.bpm)))
@@ -274,6 +274,9 @@ class Melody:
         # Tell MIDI file which key signature melody is in
         track.append(MetaMessage('key_signature',
                                  key=keyToMIDISig(self.keySig, self.scale)))
+
+        # Tell MIDI file to set instrument to self.instrument
+        track.append(Message('program_change',program=self.instrument, time=0))
 
         for i in range(self.numNotes):
             noteLen = self.sequence[i].getLengthTime(self.file.ticks_per_beat,
@@ -383,7 +386,6 @@ class Melody:
                 noteFromRef = ref.removeNote(refIdx)
                 self.addNote(noteFromRef)
                 refNotesToSwap -= 1
-
 
         self.modified = True
         ref.modified = True

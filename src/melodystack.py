@@ -1,89 +1,4 @@
 from melody import *
-from play import midiToWAV, playWAVkivy
-from random import choice
-import structures
-from scales import generate_scale
-
-def melodyStackBeta():
-    ms = MelodyStack()
-
-    options = "\nMelodies (Melody Stack Beta on Terminal Version)\n"
-    options += "------------------------\n"
-    options += "1. Play\n2. Add Melody\n3. Remove Melody\n4. Swap Melodies\n"
-    options += "5. Print Melody Stack\n6. Set Key Signature\n7. Set Scale\n"
-    options += "8. Loop Track\n9. Exit\n"
-
-    print(options)
-    nbr = input("Choose a number: ").strip()
-
-    while nbr != '9':
-        if nbr == '1':
-            single = input("Play all tracks together (y/n)? ").strip()
-            if single.lower() == 'y':
-                ms.saveMelodyStackAs("out2.mid")
-                midiToWAV("out2.mid", "temp2.wav")
-                playWAVkivy("temp2.wav")
-                ms.file.print_tracks()
-            else:
-                trackNo = int(input("Which track number? ").strip())
-                m = ms.getSpecificMelody(trackNo).duplicate()
-                m.generateMIDI()
-                in_fn = "out2track{}.mid".format(trackNo)
-                out_fn = "temp2track{}.wav".format(trackNo)
-                m.saveMelodyAs(in_fn)
-                midiToWAV(in_fn, out_fn)
-                playWAVkivy(out_fn)
-        elif nbr == '2':
-            print("\n1. Copy Existing\n2. New Melody\n3. Back to Main Menu\n")
-            nbr2 = input("Choose a number: ").strip()
-            if nbr2 == '1':
-                trackNo = int(input("Which track to copy from? ").strip())
-                destNo = int(input("Which track to copy to? ").strip())
-                ms.duplicateTrack(trackNo, destNo)
-            elif nbr2 == '2':
-                octv = int(input("Which octave: ").strip())
-                scale1 = generate_scale(ms.getKeySignature(), ms.getScale(),
-                                        octv)
-                numNotes = int(input("How many notes? ").strip())
-                meas = int(input("How many measures? ").strip())
-                mel = []
-                for i in range(numNotes):
-                    mel.append(choice(scale1))
-
-                # randomize length of each notes using getRandomStructure func
-                lengths = structures.getEqualNoteStructure(meas, numNotes)
-
-                m = Melody([], instrument=0, bpm=ms.getBPM())
-
-                # add the random notes to generate the melody
-                for i in range(numNotes):
-                    curnote = Note(mel[i], lengths[i])
-                    m.addNote(curnote)
-
-                tNo = int(input("Which track number? ").strip())
-                ms.addMelody(tNo, m)
-        elif nbr == '3':
-            tNo = int(input("Which track number? ").strip())
-            ms.deleteMelody(tNo)
-        elif nbr == '4':
-            src = int(input("Swap track... ").strip())
-            dest = int(input("With track... ").strip())
-            ms.moveMelodies(src, dest)
-        elif nbr == '5':
-            print(ms)
-        elif nbr == '6':
-            key = input("Which key? ").strip()
-            ms.setKeySignature(key)
-        elif nbr == '7':
-            scale = input("Which scale? ").strip()
-            ms.setScale(scale)
-        elif nbr == '8':
-            tNo = int(input("Which track number? ").strip())
-            nL = int(input("How many times do you want to loop? ").strip())
-            ms.loopTrack(tNo, nL)
-
-        print(options)
-        nbr = input("Choose a number: ").strip()
 
 class MelodyStack:
     # Dunder methods (__method__)
@@ -108,7 +23,7 @@ class MelodyStack:
         self.key_sig = key_sig  # Key signature of the melody stack
         self.scale = scale  # Musical scale of the melody stack
         self.tracksFilled = 0  # Number of tracks with a melody inside them
-        self.numberOfTracks = 8  # Total number of tracks (default: 8)
+        self.numberOfTracks = 10  # Total number of tracks (default: 10)
 
         self.file.ticks_per_beat = TICKS_PER_BEAT  # see melody.py
 
@@ -118,7 +33,8 @@ class MelodyStack:
                                            time_sig=time_sig,
                                            key_sig=key_sig))
             self.file.tracks.append(MidiTrack())
-            self.file.tracks[i].name = "Track {}".format(i)
+            self.file.tracks[i].append(MetaMessage('track_name',
+                                                   name="Track {}".format(i)))
 
     def __len__(self):
         """ Returns the length of the longest melody in the melody stack """
@@ -213,7 +129,7 @@ class MelodyStack:
 
         for i in range(self.numberOfTracks):
             self.subMelodies[i].setScale(newScale)
-            if len(self.file.tracks[i]) > 0:
+            if len(self.file.tracks[i]) > 1:
                 self.file.tracks[i] = self.file.tracks[i][:FIRST_NOTE_MSG_IDX]
                 self.rebuildMelodyTrack(i)
 
@@ -223,7 +139,7 @@ class MelodyStack:
 
         for i in range(self.numberOfTracks):
             self.subMelodies[i].setKeySignature(newKeySig)
-            if len(self.file.tracks[i]) > 0:
+            if len(self.file.tracks[i]) > 1:
                 self.file.tracks[i] = self.file.tracks[i][:FIRST_NOTE_MSG_IDX]
                 self.file.tracks[i][KEY_SIG_MSG_IDX] = MetaMessage(
                     'key_signature', key=keyToMIDISig(newKeySig, self.scale))
@@ -236,7 +152,7 @@ class MelodyStack:
 
         for i in range(self.numberOfTracks):
             self.subMelodies[i].setTimeSignature(newTimeSig)
-            if len(self.file.tracks[i]) > 0:
+            if len(self.file.tracks[i]) > 1:
                 self.file.tracks[i][TIME_SIG_MSG_IDX] = MetaMessage(
                     'time_signature', numerator=newTimeSig[0],
                     denominator=newTimeSig[1])
@@ -248,7 +164,7 @@ class MelodyStack:
 
         for i in range(self.numberOfTracks):
             self.subMelodies[i].setBPM(newBPM)
-            if len(self.file.tracks[i]) > 0:
+            if len(self.file.tracks[i]) > 1:
                 self.file.tracks[i][BPM_MSG_IDX] = MetaMessage('set_tempo',
                                                 tempo=bpm2tempo(self.bpm))
 
@@ -281,39 +197,40 @@ class MelodyStack:
 
         self.subMelodies[trackNbr] = self.adjustMelodyForStack(newMelody)
 
-        curTrack = self.file.tracks[trackNbr]
-
-        if len(curTrack) == 0:
+        if len(self.file.tracks[trackNbr]) == 1:
             # If this track was previously empty
             self.tracksFilled += 1
-            curTrack.append(Message('program_change',
-                                    program=newMelody.getInstrument(),
-                                    time=0))
-            curTrack.append(MetaMessage('set_tempo',
+            self.file.tracks[trackNbr].append(MetaMessage('set_tempo',
                                         tempo=bpm2tempo(self.bpm)))
-            curTrack.append(MetaMessage('time_signature',
+            self.file.tracks[trackNbr].append(MetaMessage('time_signature',
                                         numerator=self.time_sig[0],
                                         denominator=self.time_sig[1]))
-            curTrack.append(MetaMessage('key_signature',
+            self.file.tracks[trackNbr].append(MetaMessage('key_signature',
                                         key=keyToMIDISig(self.key_sig,
                                                          self.scale)))
+            self.file.tracks[trackNbr].append(Message('program_change',
+                                    program=newMelody.getInstrument(),
+                                    time=0))
         else:
             # Keep the original setup messages (excluding instrument),
-            # set the correct instrument message, and append the
-            # melody's notes
-            curTrack = curTrack[1:FIRST_NOTE_MSG_IDX]
-            curTrack.insert(0, Message('program_change',
+            # set the correct instrument message
+            self.file.tracks[trackNbr] = self.file.tracks[trackNbr][
+                                         :INSTRUMENT_MSG_IDX]
+            self.file.tracks[trackNbr].append(Message('program_change',
                             program=newMelody.getInstrument(),
                             time=0))
 
+        # Append the melody's notes
         for i in range(newMelody.getNumNotes()):
-            noteLen = newMelody.sequence[i].getLengthTime(TICKS_PER_BEAT)
-            curTrack.append(Message('note_on',
+            noteLen = newMelody.sequence[i].getLengthTime(TICKS_PER_BEAT,
+                      int((1 / self.time_sig[1]) * SMALLEST_NOTE))
+
+            self.file.tracks[trackNbr].append(Message('note_on',
                             note=newMelody.sequence[i].getMidiNumber(),
                             velocity=newMelody.sequence[i].getVelocity(),
                             time=0))
 
-            curTrack.append(Message('note_off',
+            self.file.tracks[trackNbr].append(Message('note_off',
                             note=newMelody.sequence[i].getMidiNumber(),
                             velocity=64,
                             time=noteLen))
@@ -332,8 +249,8 @@ class MelodyStack:
                                                  scale=self.scale,
                                                  time_sig=self.time_sig,
                                                  key_sig=self.key_sig))
-            oldTrack = self.file.tracks[trackNbr]
-            self.file.tracks[trackNbr] = oldTrack[:FIRST_NOTE_MSG_IDX]
+
+            self.file.tracks[trackNbr] = self.file.tracks[trackNbr][:FIRST_NOTE_MSG_IDX]
             self.tracksFilled -= 1
 
     def moveMelodies(self, srcNbr: int, destNbr: int):
@@ -375,22 +292,22 @@ class MelodyStack:
             return
 
         if len(self.subMelodies[trackNbr]) > 0:
-            newMelody = self.subMelodies[trackNbr]
-            setupMessages = self.file.tracks[trackNbr][:FIRST_NOTE_MSG_IDX]
-            self.file.tracks[trackNbr] = setupMessages
+            self.file.tracks[trackNbr] = self.file.tracks[trackNbr][
+                                         :FIRST_NOTE_MSG_IDX]
 
-            for i in range(newMelody.getNumNotes()):
-                noteLen = newMelody.sequence[i].getLengthTime(
-                    TICKS_PER_BEAT)
+            for i in range(self.subMelodies[trackNbr].getNumNotes()):
+                noteLen = self.subMelodies[trackNbr].sequence[i].getLengthTime(
+                TICKS_PER_BEAT, int((1 / self.time_sig[1]) * SMALLEST_NOTE))
+
                 self.file.tracks[trackNbr].append(Message('note_on',
-                            note=newMelody.sequence[i].getMidiNumber(),
-                            velocity=newMelody.sequence[i].getVelocity(),
-                            time=0))
+                note=self.subMelodies[trackNbr].sequence[i].getMidiNumber(),
+                velocity=self.subMelodies[trackNbr].sequence[i].getVelocity(),
+                time=0))
 
                 self.file.tracks[trackNbr].append(Message('note_off',
-                            note=newMelody.sequence[i].getMidiNumber(),
-                            velocity=64,
-                            time=noteLen))
+                note=self.subMelodies[trackNbr].sequence[i].getMidiNumber(),
+                velocity=64,
+                time=noteLen))
 
     def getSpecificMelody(self, trackNbr: int):
         """ Returns a specific melody associated with the track at trackNbr """
@@ -441,11 +358,9 @@ class MelodyStack:
         self.file.tracks.append(MidiTrack())
 
         if name == "":
-            self.file.tracks[-1].name = "Track {}".format(
-                self.numberOfTracks - 1
-            )
-        else:
-            self.file.tracks[-1].name = name
+            name = "Track {}".format(self.numberOfTracks - 1)
+
+        self.file.tracks[-1].append(MetaMessage('track_name', name=name))
 
     def deleteTrack(self, trackNbr):
         """ Deletes the track at index trackNbr"""
@@ -468,4 +383,5 @@ class MelodyStack:
             # Do nothing if the trackNbr is not within bounds
             return
 
-        self.file.tracks[trackNbr].name = newName
+        self.file.tracks[trackNbr][NAME_MSG_IDX] = MetaMessage('track_name',
+                                                               name=newName)
