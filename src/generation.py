@@ -82,6 +82,7 @@ class Generation:
 				finalBars = len(m) // SMALLEST_NOTE
 				finalInstrument = m.getInstrument()
 
+		return finalScale, finalOctave, finalKey, finalBars, finalInstrument
 
 	# Finds total fitness value of all ratings in generation
 	def calculateTotalRating(self):

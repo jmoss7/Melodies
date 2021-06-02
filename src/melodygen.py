@@ -132,7 +132,7 @@ def buildMelodyNotes(m, bars):
     s = generate_scale(m.getKeySignature(), m.getScale(), m.getOctave())
 
     if bars < MIN_BARS or bars > MAX_BARS:
-        bars = random.randint(MIN_BARS, MAX_BARS)
+        bars = random.randint(MIN_BARS, 4)
 
     # Get a random number of notes value between the number of bars (so
     # that there is roughly one note per bar) and SMALLEST_NOTE //
