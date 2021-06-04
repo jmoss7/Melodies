@@ -1,5 +1,5 @@
 # Melodies
-Made by: Austin Ng, John Mocettini, Kelechi Igwe, Yvan Gonzales
+Made by: Austin Ng, John Mocettini, Kelechi Igwe, Yvan Gonzalez
 
 ## About
 Melodies is a software application that allows a user to generate melodies using Python. Melodies is a musical collaboration between human and computer, as the user works with AI to generate new and innovative melodies!
