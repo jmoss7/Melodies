@@ -1,3 +1,4 @@
+MELODY_STACK = None
 generation_number = None
 melody_number = None
 soundPlayer = None

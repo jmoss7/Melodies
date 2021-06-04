@@ -2,7 +2,7 @@ from melody import *
 
 class MelodyStack:
     # Dunder methods (__method__)
-    def __init__(self, bpm=120, time_sig=(4, 4), key_sig="C", scale="major",
+    def __init__(self, bpm=100, time_sig=(4, 4), key_sig="C", scale="major",
                  allStartSameTime=True):
         """ Constructs a MelodyStack object, which is an array of melodies.
             The allStartSameTime boolean determines whether all the tracks in
@@ -177,14 +177,14 @@ class MelodyStack:
 
         adjusted = newMelody.duplicate()
 
-        if adjusted.getScale() != self.scale:
+        """if adjusted.getScale() != self.scale:
             adjusted.setScale(self.scale)
 
         if adjusted.getTimeSignature() != self.time_sig:
             adjusted.setTimeSignature(self.time_sig)
 
         if adjusted.getKeySignature() != self.key_sig:
-            adjusted.setKeySignature(self.key_sig)
+            adjusted.setKeySignature(self.key_sig)"""
 
         return adjusted
 

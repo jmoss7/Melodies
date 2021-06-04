@@ -12,17 +12,17 @@
             Label:
                 id: title_label
                 text: "Melodies"
-                font_size: 64
+                font_size: 48
     
             Label:
                 id: between_title_key_label
                 text: ""
-                font_size: 12
+                font_size: 64
     
             Label:
                 id: key_label
                 text: "Key"
-                font_size: 32
+                font_size: 24
     
             Spinner:
                 id: spinner_key_id
@@ -89,82 +89,87 @@
                 text: 'Save Melody'
                 on_press: root.save_melody()
                 on_release: print("Melody saved!")
+
+            Button:
+                text: 'Add Last Generated to Stack'
+                on_press: root.addMelToStack()
+                on_release: print("added to stack")
     
             Label:
                 id: generation_label
                 text: "Generation: Press 'Generate Melodies' to create the first Generation!"
-                font_size: 32
+                font_size: 24
     
             Label:
                 id: ratings_label
                 text: "Ratings"
                 font_size: 32
     
-        BoxLayout:
-            orientation: "horizontal"
-            size: root.width - 200, root.height * 2 / 3
-            pos: 100, 50
-    
-            Button:
-                id: rating_1_id
-                text: '1'
-                size_hint: (.1, .1)
-                on_press: root.giveRating("1")
-                on_release: print("MIDI file written to out.mid!")
-    
-            Button:
-                text: '2'
-                size_hint: (.1, .1)
-                on_press: root.giveRating("2")
-                on_release: print("MIDI file written to out.mid!")
-    
-            Button:
-                text: '3'
-                size_hint: (.1, .1)
-                on_press: root.giveRating("3")
-                on_release: print("MIDI file written to out.mid!")
-    
-            Button:
-                text: '4'
-                size_hint: (.1, .1)
-                on_press: root.giveRating("4")
-                on_release: print("MIDI file written to out.mid!")
-    
-            Button:
-                text: '5'
-                size_hint: (.1, .1)
-                on_press: root.giveRating("5")
-                on_release: print("MIDI file written to out.mid!")
-    
-            Button:
-                text: '6'
-                size_hint: (.1, .1)
-                on_press: root.giveRating("6")
-                on_release: print("MIDI file written to out.mid!")
-    
-            Button:
-                text: '7'
-                size_hint: (.1, .1)
-                on_press: root.giveRating("7")
-                on_release: print("MIDI file written to out.mid!")
-    
-            Button:
-                text: '8'
-                size_hint: (.1, .1)
-                on_press: root.giveRating("8")
-                on_release: print("MIDI file written to out.mid!")
-    
-            Button:
-                text: '9'
-                size_hint: (.1, .1)
-                on_press: root.giveRating("9")
-                on_release: print("MIDI file written to out.mid!")
-    
-            Button:
-                text: '10'
-                size_hint: (.1, .1)
-                on_press: root.giveRating("10")
-                on_release: print("MIDI file written to out.mid!")
+            BoxLayout:
+                orientation: "horizontal"
+                size: root.width - 200, root.height * 2 / 3
+                pos: 100, 50
+
+                Button:
+                    id: rating_1_id
+                    text: '1'
+                    size_hint: (.1, .1)
+                    on_press: root.giveRating("1")
+                    on_release: print("MIDI file written to out.mid!")
+
+                Button:
+                    text: '2'
+                    size_hint: (.1, .1)
+                    on_press: root.giveRating("2")
+                    on_release: print("MIDI file written to out.mid!")
+
+                Button:
+                    text: '3'
+                    size_hint: (.1, .1)
+                    on_press: root.giveRating("3")
+                    on_release: print("MIDI file written to out.mid!")
+
+                Button:
+                    text: '4'
+                    size_hint: (.1, .1)
+                    on_press: root.giveRating("4")
+                    on_release: print("MIDI file written to out.mid!")
+
+                Button:
+                    text: '5'
+                    size_hint: (.1, .1)
+                    on_press: root.giveRating("5")
+                    on_release: print("MIDI file written to out.mid!")
+
+                Button:
+                    text: '6'
+                    size_hint: (.1, .1)
+                    on_press: root.giveRating("6")
+                    on_release: print("MIDI file written to out.mid!")
+
+                Button:
+                    text: '7'
+                    size_hint: (.1, .1)
+                    on_press: root.giveRating("7")
+                    on_release: print("MIDI file written to out.mid!")
+
+                Button:
+                    text: '8'
+                    size_hint: (.1, .1)
+                    on_press: root.giveRating("8")
+                    on_release: print("MIDI file written to out.mid!")
+
+                Button:
+                    text: '9'
+                    size_hint: (.1, .1)
+                    on_press: root.giveRating("9")
+                    on_release: print("MIDI file written to out.mid!")
+
+                Button:
+                    text: '10'
+                    size_hint: (.1, .1)
+                    on_press: root.giveRating("10")
+                    on_release: print("MIDI file written to out.mid!")
 
     TabbedPanelItem:
         text: 'melody stack'
@@ -194,7 +199,7 @@
                     source: 'images/spot1.png'
                     width: 200
                     height: 200
-                    center_x: self.parent.center_x - 400
+                    center_x: self.parent.center_x - (root.width/2)
                     center_y: self.parent.center_y
             FloatLayout:
                 orientation: "vertical"
@@ -221,7 +226,7 @@
                         source: 'images/spot2.png'
                         width: 205
                         height: 200
-                        center_x: self.parent.center_x - 400
+                        center_x: self.parent.center_x - (root.width/2)
                         center_y: self.parent.center_y
             FloatLayout:
                 orientation: "vertical"
@@ -248,7 +253,7 @@
                         source: 'images/spot3.png'
                         width: 205
                         height: 200
-                        center_x: self.parent.center_x - 400
+                        center_x: self.parent.center_x - (root.width/2)
                         center_y: self.parent.center_y
             FloatLayout:
                 orientation: "vertical"
@@ -275,7 +280,7 @@
                         source: 'images/spot4.png'
                         width: 205
                         height: 200
-                        center_x: self.parent.center_x - 400
+                        center_x: self.parent.center_x - (root.width/2)
                         center_y: self.parent.center_y
             FloatLayout:
                 orientation: "vertical"
@@ -302,7 +307,7 @@
                         source: 'images/spot5.png'
                         width: 205
                         height: 200
-                        center_x: self.parent.center_x - 400
+                        center_x: self.parent.center_x - (root.width/2)
                         center_y: self.parent.center_y
             FloatLayout:
                 orientation: "vertical"
@@ -329,7 +334,7 @@
                         source: 'images/spot6.png'
                         width: 205
                         height: 200
-                        center_x: self.parent.center_x - 400
+                        center_x: self.parent.center_x - (root.width/2)
                         center_y: self.parent.center_y
             FloatLayout:
                 orientation: "vertical"
@@ -356,7 +361,7 @@
                         source: 'images/spot7.png'
                         width: 205
                         height: 200
-                        center_x: self.parent.center_x - 400
+                        center_x: self.parent.center_x - (root.width/2)
                         center_y: self.parent.center_y
             FloatLayout:
                 orientation: "vertical"
@@ -383,7 +388,7 @@
                         source: 'images/spot8.png'
                         width: 205
                         height: 200
-                        center_x: self.parent.center_x - 400
+                        center_x: self.parent.center_x - (root.width/2)
                         center_y: self.parent.center_y
             FloatLayout:
                 orientation: "vertical"
@@ -410,7 +415,7 @@
                         source: 'images/spot9.png'
                         width: 205
                         height: 200
-                        center_x: self.parent.center_x - 400
+                        center_x: self.parent.center_x - (root.width/2)
                         center_y: self.parent.center_y
             FloatLayout:
                 orientation: "vertical"
@@ -437,7 +442,7 @@
                         source: 'images/spot10.png'
                         width: 205
                         height: 200
-                        center_x: self.parent.center_x - 400
+                        center_x: self.parent.center_x - (root.width/2)
                         center_y: self.parent.center_y
             FloatLayout:
                 orientation: "vertical"
@@ -465,5 +470,5 @@
                         source: 'images/fullstack.png'
                         width: 205
                         height: 200
-                        center_x: self.parent.center_x - 400
+                        center_x: self.parent.center_x - (root.width/2)
                         center_y: self.parent.center_y

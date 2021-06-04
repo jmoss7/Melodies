@@ -179,9 +179,11 @@ class Melody:
 
                 for n in self.sequence:
                     # Get the index of the note in its original scale
-                    diffIdx = oldDict[n.getMidiNumber()]
-
-                    n.semitoneChange(diff[diffIdx])
+                    try:
+                        diffIdx = oldDict[n.getMidiNumber()]
+                        n.semitoneChange(diff[diffIdx])
+                    except:
+                        pass
 
         self.scale = newScale
         self.modified = True
