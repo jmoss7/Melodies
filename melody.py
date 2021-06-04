@@ -10,11 +10,11 @@ INSTRUMENT_MSG_IDX = 0  # Should always be first message in track
 BPM_MSG_IDX = 1
 TIME_SIG_MSG_IDX = 2
 KEY_SIG_MSG_IDX = 3
-FIRST_NOTE_MSG_IDX = 4  # Should always be +1 of last setup message
+FIRST_NOTE_MSG_IDX = 1  # Should always be +1 of last setup message
 
 class Melody:
     # Dunder methods (__method__)
-    def __init__(self, contents: List[int], instrument: int = 0,
+    def __init__(self, contents: List[Note], instrument: int = 0,
                  bpm: int = 120, scale: str = "major", octave: int = 4,
                  time_sig: Tuple[int, int] = (4, 4), key_sig: str = "C"):
         """ Constructs a Melody object, which contains the characteristics
