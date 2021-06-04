@@ -17,14 +17,16 @@ class MelodyStack:
         self.file = MidiFile(type=ft)  # MIDI file (.mid)
         self.subMelodies = []  # Array of melodies representing each Melody
         # object in the melody stack
-
+        self.melsStatus = []
+        for i in range(10):
+            self.melsStatus.append(False)
         self.bpm = bpm  # BPM of the melody stack
         self.time_sig = time_sig  # Time signature of the melody stack
         self.key_sig = key_sig  # Key signature of the melody stack
         self.scale = scale  # Musical scale of the melody stack
         self.tracksFilled = 0  # Number of tracks with a melody inside them
         self.numberOfTracks = 10  # Total number of tracks (default: 10)
-
+        self.stackSize = 0
         self.file.ticks_per_beat = TICKS_PER_BEAT  # see melody.py
 
         for i in range(self.numberOfTracks):
@@ -193,10 +195,11 @@ class MelodyStack:
 
         if trackNbr >= self.numberOfTracks or trackNbr < 0:
             # Should return error, but for now
-            return
+            print("you tried adding too many tracks\n")
+            return -1
 
         self.subMelodies[trackNbr] = self.adjustMelodyForStack(newMelody)
-
+        self.melsStatus[trackNbr] = True
         if len(self.file.tracks[trackNbr]) == 1:
             # If this track was previously empty
             self.tracksFilled += 1
@@ -224,16 +227,15 @@ class MelodyStack:
         for i in range(newMelody.getNumNotes()):
             noteLen = newMelody.sequence[i].getLengthTime(TICKS_PER_BEAT,
                       int((1 / self.time_sig[1]) * SMALLEST_NOTE))
-
             self.file.tracks[trackNbr].append(Message('note_on',
                             note=newMelody.sequence[i].getMidiNumber(),
                             velocity=newMelody.sequence[i].getVelocity(),
                             time=0))
-
             self.file.tracks[trackNbr].append(Message('note_off',
-                            note=newMelody.sequence[i].getMidiNumber(),
-                            velocity=64,
-                            time=noteLen))
+                                                  note=newMelody.sequence[i].getMidiNumber(),
+                                                  velocity=64,
+                                                  time=noteLen))
+
 
     def deleteMelody(self, trackNbr: int):
         """ If it exists, clears the contents of the track at index trackNbr
@@ -242,16 +244,20 @@ class MelodyStack:
         if trackNbr >= self.numberOfTracks or trackNbr < 0:
             # To prevent out of bounds error
             return
-
+        self.melsStatus[trackNbr] = False
         # If not an empty melody
         if len(self.subMelodies[trackNbr]) > 0:
             self.subMelodies[trackNbr] = (Melody([], bpm=self.bpm,
                                                  scale=self.scale,
                                                  time_sig=self.time_sig,
                                                  key_sig=self.key_sig))
-
             self.file.tracks[trackNbr] = self.file.tracks[trackNbr][:FIRST_NOTE_MSG_IDX]
             self.tracksFilled -= 1
+
+    def findFirstEmpty(self):
+        for i in range(0, len(self.melsStatus)):
+            if self.melsStatus[i] == False:
+                return i
 
     def moveMelodies(self, srcNbr: int, destNbr: int):
         """ Takes the track at index srcNbr and swaps the position of the
@@ -316,7 +322,7 @@ class MelodyStack:
             # Return None if trackNbr is not within bounds
             return None
 
-        return self.subMelodies[trackNbr]
+        return self.subMelodies[trackNbr].duplicate()
 
     def getSpecificTrack(self, trackNbr: int):
         """ Returns a specific track at trackNbr """
@@ -367,6 +373,7 @@ class MelodyStack:
 
         if 0 > trackNbr > self.numberOfTracks - 1:
             # Do nothing if the trackNbr is not within bounds
+            print("no track" + trackNbr)
             return
 
         x = self.subMelodies.pop(trackNbr)
