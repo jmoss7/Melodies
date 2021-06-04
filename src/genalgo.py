@@ -42,7 +42,9 @@ class MyLayout(Widget):
 
     # replays the current melody
     def replay_melody(self):
-        playWAVkivy("../temp/temp.wav")
+        if str(global_vars.soundPlayer.state) != "play":
+            print("Replaying the current melody")
+            playWAVkivy("../temp/temp.wav")
 
     # rates current melody increments global index
     def giveRating(self, curRating):
@@ -83,6 +85,7 @@ class MyLayout(Widget):
 
     def main(self, key, scale, octave, num_bars, instrument):
         global rating_index, gen1
+
         scale = scale.lower()
         key = key.lower()
         key = key.capitalize()
