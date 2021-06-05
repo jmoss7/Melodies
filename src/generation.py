@@ -1,14 +1,6 @@
 from child import Child
-from typing import List
-
 from play import *
 from melodygen import *
-from melodystack import MelodyStack
-from kivy.app import App
-from kivy.uix.widget import Widget
-from kivy.lang import Builder
-from kivy.uix.button import Button
-
 import random
 from numpy.random import choice
 

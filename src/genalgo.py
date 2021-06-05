@@ -1,10 +1,10 @@
 import shutil
+
 from play import *
 from melodygen import *
 from melodystack import MelodyStack
 from kivy.app import App
 from kivy.uix.tabbedpanel import TabbedPanel
-from kivy.uix.widget import Widget
 from kivy.lang import Builder
 from generation import Generation
 import global_vars
@@ -116,6 +116,9 @@ class MyLayout(TabbedPanel):
 
     # rates current melody increments global index
     def giveRating(self, curRating):
+        if not global_vars.gen1:
+            return
+
         curChild = global_vars.gen1.getChildren()[global_vars.rating_index]
 
         curRating = float(int(curRating))
@@ -212,8 +215,11 @@ class MyLayout(TabbedPanel):
 
 class MainApp(App):
     def build(self):
+        self.title = "Melodies"
+
         if global_vars.MELODY_STACK.numberOfFilledTracks() == 0:
             MyLayout().clearStack()
+
         return MyLayout()
 
 if __name__ == '__main__':

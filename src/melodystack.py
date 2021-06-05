@@ -45,8 +45,14 @@ class MelodyStack:
 
     def __str__(self):
         header = "\n------------------------\n"
-        header += "BPM: {}, Time Signature: {}/{}, Key Signature: {}\n".format(
-                    self.bpm, self.time_sig[0], self.time_sig[1], self.key_sig)
+        header += "BPM: {}, Time Signature: {}/{}\n".format(self.bpm,
+                                                            self.time_sig[0],
+                                                            self.time_sig[1])
+        header += "Key: {}, Scale: {}\n".format(self.key_sig,
+                                                self.scale.capitalize())
+        header += "Length: {} ({} measures), # of Tracks: {}\n".format(
+                  len(self), len(self) // SMALLEST_NOTE,
+                  self.numberOfFilledTracks())
         header += "------------------------"
 
         if len(self) == 0:
@@ -202,7 +208,6 @@ class MelodyStack:
         self.melsStatus[trackNbr] = True
         if len(self.file.tracks[trackNbr]) == 1:
             # If this track was previously empty
-            self.tracksFilled += 1
             self.file.tracks[trackNbr].append(MetaMessage('set_tempo',
                                         tempo=bpm2tempo(self.bpm)))
             self.file.tracks[trackNbr].append(MetaMessage('time_signature',
@@ -236,6 +241,7 @@ class MelodyStack:
                                                   velocity=64,
                                                   time=noteLen))
 
+        self.tracksFilled += 1
 
     def deleteMelody(self, trackNbr: int):
         """ If it exists, clears the contents of the track at index trackNbr
