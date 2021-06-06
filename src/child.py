@@ -1,8 +1,5 @@
-from melody import Melody
 from scales import *
-
 import random
-
 
 class Child:
 	# initialize child in a population
@@ -11,6 +8,14 @@ class Child:
 		self.rating = None
 		self.fitness = None
 		self.chosen = False
+
+	def __str__(self):
+		return "\nChild Object\nRating: {}\nFitness: {}\nChosen: {}\nData:\n{}".format(
+				self.rating, self.fitness, self.chosen, self.data
+		)
+
+	def __repr__(self):
+		return str(self)
 
 	def getData(self):
 		return self.data

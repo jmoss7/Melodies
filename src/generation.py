@@ -4,9 +4,7 @@ from melodygen import *
 import random
 from numpy.random import choice
 
-
 class Generation:
-
 	def __init__(self, children: List[Child], gen: int):
 
 		if not children:
@@ -80,7 +78,12 @@ class Generation:
 	def calculateTotalRating(self):
 		total = 0
 		for c in self.children:
-			total += c.getRating()
+			try:
+				total += c.getRating()
+			except:
+				print("\n\n{}\n\n".format(self.children))
+				exit(1)
+
 		self.totalRating = total
 
 	# Normalize fitness value of each individual

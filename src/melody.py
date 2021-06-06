@@ -72,8 +72,6 @@ class Melody:
             header += "{0:^8} ".format(len(elem))
             header += "{0:^9}\n".format(elem.getVelocity())
 
-        header += "Total Length: {}".format(self.length)
-
         return header
 
     def __repr__(self):

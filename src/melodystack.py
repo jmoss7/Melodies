@@ -26,7 +26,6 @@ class MelodyStack:
         self.scale = scale  # Musical scale of the melody stack
         self.tracksFilled = 0  # Number of tracks with a melody inside them
         self.numberOfTracks = 10  # Total number of tracks (default: 10)
-        self.stackSize = 0
         self.file.ticks_per_beat = TICKS_PER_BEAT  # see melody.py
 
         for i in range(self.numberOfTracks):
@@ -264,6 +263,8 @@ class MelodyStack:
         for i in range(0, len(self.melsStatus)):
             if self.melsStatus[i] == False:
                 return i
+
+        return -1
 
     def moveMelodies(self, srcNbr: int, destNbr: int):
         """ Takes the track at index srcNbr and swaps the position of the

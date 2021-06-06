@@ -1,3 +1,4 @@
+import global_vars
 import shutil
 
 from play import *
@@ -7,7 +8,6 @@ from kivy.app import App
 from kivy.uix.tabbedpanel import TabbedPanel
 from kivy.lang import Builder
 from generation import Generation
-import global_vars
 
 MELODY_SAVE_NUMBER: int = 1
 MELODY_FILENAME_MIDI: str = "../temp/out.mid"
@@ -53,7 +53,6 @@ class MyLayout(TabbedPanel):
             print("did not have a melody to add to stack")
 
     def clearStack(self):
-        midTrackName = ""
         for i in range(10):
             midTrackName = TEMP_FOLD + "stack_spot" + str(i+1) + ".mid"
             wavTrackName = TEMP_FOLD + "stack_spot" + str(i+1) + ".wav"

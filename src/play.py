@@ -18,8 +18,9 @@ def midiToWAV(in_fname: str, out_fname: str):
 def playWAVkivy(filename: str):
     """ Play the WAV file called filename through kivy SoundLoader """
 
-    if str(global_vars.soundPlayer) == "play":
-        global_vars.soundPlayer.stop()
+    if global_vars.soundPlayer:
+        if str(global_vars.soundPlayer.state) == "play":
+            global_vars.soundPlayer.stop()
 
     global_vars.soundPlayer = SoundLoader.load(filename)
     if global_vars.soundPlayer:
