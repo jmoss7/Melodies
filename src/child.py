@@ -1,3 +1,4 @@
+from melody import Melody
 from scales import *
 import random
 
