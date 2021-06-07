@@ -101,7 +101,7 @@ class MyLayout(TabbedPanel):
         global MELODY_FILENAME_MIDI
         global MELODY_FILENAME_WAV
         try:
-            shutil.copyfile(MELODY_FILENAME_MIDI + "a", "../saved/saved_melody_" + str(MELODY_SAVE_NUMBER) + ".mid")
+            shutil.copyfile(MELODY_FILENAME_MIDI, "../saved/saved_melody_" + str(MELODY_SAVE_NUMBER) + ".mid")
             shutil.copyfile(MELODY_FILENAME_WAV, "../saved/saved_melody_" + str(MELODY_SAVE_NUMBER) + ".wav")
             MELODY_SAVE_NUMBER += 1
         except:
@@ -198,8 +198,8 @@ class MyLayout(TabbedPanel):
         # ********* ADD LATER: Option to change instrument *************
         m = global_vars.gen1.getChildren()[global_vars.rating_index].getData()
         m.generateMIDI()
-        m.saveMelodyAs('../saved/out.mid')
-        midiToWAV("../saved/out.mid", "../temp/temp.wav")
+        m.saveMelodyAs('../temp/out.mid')
+        midiToWAV("../temp/out.mid", "../temp/temp.wav")
         playWAVkivy("../temp/temp.wav")
         global_vars.generation_number = 1
         global_vars.melody_number = 1
