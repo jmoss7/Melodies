@@ -1,6 +1,7 @@
-import global_vars
+import os
 import shutil
 
+from datetime import datetime
 from play import *
 from melodygen import *
 from melodystack import MelodyStack
@@ -8,11 +9,8 @@ from kivy.app import App
 from kivy.uix.tabbedpanel import TabbedPanel
 from kivy.lang import Builder
 from generation import Generation
+from taste import Taste
 
-MELODY_SAVE_NUMBER: int = 1
-MELODY_FILENAME_MIDI: str = "../temp/out.mid"
-MELODY_FILENAME_WAV: str = "../temp/temp.wav"
-global_vars.MELODY_STACK = MelodyStack()
 TEMP_FOLD = "../temp/"
 
 Builder.load_file('spin.kv')
@@ -97,13 +95,16 @@ class MyLayout(TabbedPanel):
         print(global_vars.MELODY_STACK)
 
     def save_melody(self):
-        global MELODY_SAVE_NUMBER
-        global MELODY_FILENAME_MIDI
-        global MELODY_FILENAME_WAV
+        temp = str(datetime.now()).split()
+        temp.insert(1, "at")
+        temp[2] = temp[2][:5]
+        now = "".join(temp)
+        saveFilename = "../saved/saved_melody_"
+        midiFilename = "../temp/out.mid"
+        wavFilename = "../temp/temp.wav"
         try:
-            shutil.copyfile(MELODY_FILENAME_MIDI, "../saved/saved_melody_" + str(MELODY_SAVE_NUMBER) + ".mid")
-            shutil.copyfile(MELODY_FILENAME_WAV, "../saved/saved_melody_" + str(MELODY_SAVE_NUMBER) + ".wav")
-            MELODY_SAVE_NUMBER += 1
+            shutil.copyfile(midiFilename, saveFilename + now + ".mid")
+            shutil.copyfile(wavFilename, saveFilename + now + ".wav")
         except:
             "Unable to save melody"
 
@@ -122,7 +123,9 @@ class MyLayout(TabbedPanel):
 
         curRating = float(int(curRating))
         curChild.setRating(curRating)
-
+        # NEW EXPERIMENTAL FEATURE
+        global_vars.TASTE_MANAGER.setRating(curChild.getData(), int(curRating))
+        ##########################
         global_vars.rating_index += 1
 
         if global_vars.rating_index <= 9:
@@ -214,15 +217,23 @@ class MyLayout(TabbedPanel):
 
 class MainApp(App):
     def build(self):
+        if not os.path.exists("../support-files/req/melodies.sf2"):
+            print("Error: melodies.sf2 not found in correct directory.")
+            exit(1)
+
         self.title = "Melodies"
 
+        global_vars.MELODY_STACK = MelodyStack()
         if global_vars.MELODY_STACK.numberOfFilledTracks() == 0:
             MyLayout().clearStack()
+
+        global_vars.TASTE_MANAGER = Taste(open(
+            "../support-files/opt/taste.mel", "r+"))
 
         return MyLayout()
 
 if __name__ == '__main__':
     MainApp().run()
-
+    global_vars.TASTE_MANAGER.close()
 
 

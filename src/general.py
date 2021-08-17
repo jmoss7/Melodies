@@ -1,4 +1,4 @@
-from typing import List, Tuple, Dict
+from typing import List, Tuple, Dict, TextIO
 
 # Number of clock ticks for each beat (best if large and must be divisible by
 # SMALLEST_NOTE (beat = 1/(denominator of the time signature))

@@ -1,0 +1,3 @@
+Segment of instructions from https://ksvi.mff.cuni.cz/~dingle/2019/prog_1/python_music.html
+
+1. Add the fluidsynth\bin subdirectory to your PATH. To do this, click in the search box on the task bar, run the command 'Edit the system environment variables', click 'Environment Variables…', select Path in the 'User variables' section, click 'Edit…', click New, then enter the path of the bin subdirectory, e.g. C:\Users\me\Melodies\setup\fluidsynth\bin

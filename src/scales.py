@@ -58,6 +58,9 @@ scales = {
 	"blues": [0, 3, 5, 6, 7, 10, 12]
 }
 
+scalesArray = ["major", "minor", "harmonic minor", "melodic minor",
+			   "pentatonic", "whole tone", "chromatic", "blues"]
+
 # generates scale from from the given key,scale, & octave
 def generate_scale(key, scale, octave):
 	out = []
