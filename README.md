@@ -9,8 +9,9 @@ Melodies is a senior project for Austin, John, Kelechi, and Yvan, who are senior
 ## Installation Instructions
 1. Install Python 3.x (newest version recommended)
 2. (For Mac users only) Install Homebrew
-3. Run setup.py (located in the setup folder) and make sure that at the end it says "Melodies was successfully setup on this machine and is now available to use". If not follow the error messages to make sure all supporting modules and programs are installed.
-4. Run Melodies.sh to start Melodies (or run genalgo.py in the src folder).
+3. Download the MuseScore Soundfont2 file and place it in the following folder in this project's directory calling it melodies.sf2: /support-files/req/melodies.sf2 (Download from here: https://drive.google.com/file/d/1Ap53QQcdl_WKtbZ_9SlcE-7LYi014w6E/view?usp=sharing)
+4. Run setup.py (located in the setup folder) and make sure that at the end it says "Melodies was successfully setup on this machine and is now available to use". If not follow the error messages to make sure all supporting modules and programs are installed.
+5. Run the Melodies executable (located in bin folder) to start Melodies (or run genalgo.py in the src folder).
 
 ## How To Use
 ### Main Tab
