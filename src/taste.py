@@ -3,26 +3,7 @@ import shutil
 from datetime import date
 from general import *
 from melody import Melody
-
-
-def makeNotesString(notes):
-    """ Takes a list of strings representing notes and converts it into one
-        string in the format used in the taste.mel file """
-
-    s = ""
-
-    if isinstance(notes, Melody):
-        for n in notes.sequence:
-            name = n.getName()[:2]
-            if name == "Rest":
-                name = "R"
-
-            s += name
-    else:
-        for n in notes:
-            s += n
-
-    return s
+from trie import *
 
 
 def makeNotesList(notes):
@@ -70,7 +51,8 @@ def isGreater(first: str, second: str):
 
 
 class Taste:
-    def __init__(self, fp: TextIO, backupFreq: int = 20):
+    def __init__(self, fp: TextIO = None, backupFreq: int = 20,
+                 canWrite: bool = True, canRead: bool = True):
         """ The Taste object is used to interface Melodies with a user's
             taste.mel file. The taste.mel file contains melodies that a user
             has generated and the corresponding rating they gave to each
@@ -84,31 +66,32 @@ class Taste:
         # 10: A#, 11: B, 12: Rest
         self.firstNotes = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
 
-        # Key: The noteString (see below) of a stored melody
-        # Value: The stored rating of that melody
-        self.ratings = {}
+        # The ratings of melodies stored using the MelodyTrie structure
+        self.ratings = MelodyTrie()
 
         self.updateCount = 0  # Number of times taste.mel has been changed
         self.updateFreq = backupFreq  # How often to backup taste.mel
         self.isReference = False  # Whether or not user can getRating from file
+        self.canWrite = canWrite
+        self.canRead = canRead
 
         # self.exists tells program if taste.mel is available and verified
-        if not fp:
+        if fp is None:
             self.exists = False
+            self.canWrite = False
+            self.canRead = False
+            return
         else:
             self.exists = self.verifyHeader()
+            if not self.exists:
+                self.canWrite = False
+                self.canRead = False
 
         self.loadMemory()
-        print(self.firstNotes)
 
     def loadMemory(self):
         """ Initializes the ratings and firstNotes attributes of the taste
             file """
-
-        self.fp.seek(0, 0)
-        temp = self.fp.readlines()
-        if len(temp) > 21:  # If there are more than 20 lines of melodies
-            self.isReference = True
 
         self.fp.seek(20, 0)
         pos = 20
@@ -147,12 +130,12 @@ class Taste:
                     c = self.fp.read(1)
                     pos += 1
 
-                if int(rating) < 1:
-                    self.ratings[makeNotesString(noteBank)] = 1
-                elif int(rating) > 10:
-                    self.ratings[makeNotesString(noteBank)] = 10
-                else:
-                    self.ratings[makeNotesString(noteBank)] = int(rating)
+                try:
+                    curRating = int(rating)
+                    self.ratings.addMelody(noteBank, curRating)
+                except:
+                    self.exists = False
+                    return
 
                 firstNote = True
                 if self.firstNotes[noteToIndex(noteBank[0])] == -1:
@@ -162,6 +145,11 @@ class Taste:
                 pos += 1
 
             c = self.fp.read(1)
+
+        if -1 in self.firstNotes:  # If one note does not start any melody
+            self.canRead = False
+        else:
+            self.isReference = True
 
     def verifyHeader(self):
         """ Checks to make sure that the header of the taste.mel file is
@@ -192,54 +180,30 @@ class Taste:
             in taste.mel, this function returns a rating based on related
             melodies in taste.mel """
 
-        if not self.isReference or not self.exists:
+        # IMPLEMENTATION DECISION
+        # There are two ways that this function can be done. The first way is
+        # currently implemented whilst the second way is not done and includes
+        # a few comments in this function.
+        #
+        # 1) Check an entire melody to see if that melody is in the MelodyTrie.
+        #    If so, then the data structure will return the accurate rating for
+        #    the melody. If not, then the data structure will return an average
+        #    rating (estimation). The issues include the inaccuracy of the
+        #    average rating along with not checking for parts of a melody (e.g.
+        #    the middle 10 notes are stored in trie, but not the 2 outer notes)
+        #
+        # 2) Check each part of the melody using a sliding window technique and
+        #    generate a rating based on that. This would use the traverse
+        #    function in MelodyTrie to efficiently move up/down the structure.
+        #    This algorithm would be more complicated as you would need to
+        #    decide the weights of different parts of melody (e.g. If middle
+        #    third of melody is stored in trie, how does the first and last
+        #    third of melody affect the overall rating?)
+
+        if not self.isReference or not self.exists or not self.canRead:
             return -1
 
-        curRating = -1
-
-        notesString = makeNotesString(m)
-        if self.ratings.get(notesString, False):
-            return self.ratings[notesString]
-
-        pastRatingLength = 0
-
-        while True:
-            extraLength = 0
-            extraNotes = ""
-            while notesString != '':
-                extraNotes += notesString[-1]
-                notesString = notesString[:-1]
-                extraLength += 1
-
-                if self.ratings.get(notesString, False):
-                    if curRating == -1:
-                        curRating = self.ratings[notesString]
-                    elif pastRatingLength != extraLength:
-                        oldRating = curRating
-                        newRating = self.ratings[notesString]
-                        sumLength = pastRatingLength + extraLength
-                        curRating = (((oldRating * pastRatingLength) //
-                                      sumLength) + ((newRating *
-                                                     len(notesString))
-                                                    // sumLength))
-                    else:
-                        curRating = ((curRating + self.ratings[notesString])
-                                     // 2)
-
-                    pastRatingLength += len(notesString)
-                    break
-
-            if notesString:
-                if len(extraNotes) >= 3:
-                    # Rating might not be as good due to extra one or two notes
-                    curRating = max(curRating - 1, 1)
-                    break
-                else:
-                    notesString = extraNotes
-            else:
-                break
-
-        return curRating
+        return self.ratings.getRating(makeNotesList(m))
 
     def srSetup(self, firstNote: str):
         startIdx = noteToIndex(firstNote)
@@ -262,7 +226,7 @@ class Taste:
         """ Takes a melody and stores its rating into taste.mel (overwrites
             previous rating if melody was already in file) """
 
-        if not self.exists:
+        if not self.exists or not self.canWrite:
             return
 
         noteBank = makeNotesList(m)
@@ -332,7 +296,7 @@ class Taste:
         for line in storedBank:  # Do it line by line to avoid one big write
             self.fp.write(line)
 
-        self.ratings[makeNotesString(noteBank)] = rating
+        self.ratings.addMelody(noteBank, rating)
         self.incrementSaves()
 
     def incrementSaves(self):

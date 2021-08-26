@@ -1,5 +1,8 @@
 import os
+os.environ["KIVY_NO_ARGS"] = "1"  # Must be called before kivy import
+
 import shutil
+import sys
 
 from datetime import datetime
 from play import *
@@ -10,10 +13,37 @@ from kivy.uix.tabbedpanel import TabbedPanel
 from kivy.lang import Builder
 from generation import Generation
 from taste import Taste
+from time import sleep
 
 TEMP_FOLD = "../temp/"
 
 Builder.load_file('spin.kv')
+
+
+def melodiesSetup():
+    if not os.path.exists("../support-files/req/melodies.sf2"):
+        print("Error: melodies.sf2 not found in required directory.")
+        exit(1)
+
+    global_vars.MELODY_STACK = MelodyStack()
+    if global_vars.MELODY_STACK.numberOfFilledTracks() == 0:
+        MyLayout().clearStack()
+
+    if os.path.exists("../support-files/opt/taste.mel"):
+        args = sys.argv[1:]
+
+        if ("-t" in args) or ("-tr" in args) or ("-tw" in args):
+            global_vars.TASTE_MANAGER = Taste(fp=open(
+                "../support-files/opt/taste.mel", "r+"))
+
+            if global_vars.TASTE_MANAGER.canWrite and "-tr" in args:
+                global_vars.TASTE_MANAGER.canWrite = False
+            elif global_vars.TASTE_MANAGER.canRead and "-tw" in args:
+                global_vars.TASTE_MANAGER.canRead = False
+        else:
+            global_vars.TASTE_MANAGER = Taste()
+    else:
+        global_vars.TASTE_MANAGER = Taste()
 
 class MyLayout(TabbedPanel):
     def update_label(self, input_id, value):
@@ -94,6 +124,35 @@ class MyLayout(TabbedPanel):
         playWAVkivy(TEMP_FOLD + "melodyStack.wav")
         print(global_vars.MELODY_STACK)
 
+    def autoplay(self, key, scale, octave, num_bars, instrument):
+        if not global_vars.TASTE_MANAGER.canRead:
+            return
+
+        if global_vars.TASTE_MANAGER.canWrite:
+            # As for right now, you cannot read and write through autoplay
+            global_vars.TASTE_MANAGER.canWrite = False
+
+        self.main(key, scale, octave, num_bars, instrument)
+
+        while True:
+            # As for right now, once you get into autoplay you can't leave it
+            curChild = global_vars.gen1.getChildren()[global_vars.rating_index]
+            curMelody = curChild.getData()
+            beatsPerSec = curMelody.getBPM() / 60
+            beatVal = curMelody.getTimeSignature()[1]
+            numBeats = len(curMelody) // (SMALLEST_NOTE // beatVal)
+            melodyTime = int(beatsPerSec * numBeats)
+
+            sleep(melodyTime - 1)  # Minus 1 is just to speed up process
+            playWAVkivy("../temp/temp.wav")  # Replay call does not work here
+            sleep(melodyTime - 1)
+
+            curRating = global_vars.TASTE_MANAGER.getRating(
+                curMelody)
+            print(f"Guessed Rating: {curRating}")
+            sleep(2)
+            self.giveRating(curRating)
+
     def save_melody(self):
         temp = str(datetime.now()).split()
         temp.insert(1, "at")
@@ -124,7 +183,9 @@ class MyLayout(TabbedPanel):
         curRating = float(int(curRating))
         curChild.setRating(curRating)
         # NEW EXPERIMENTAL FEATURE
-        global_vars.TASTE_MANAGER.setRating(curChild.getData(), int(curRating))
+        if global_vars.TASTE_MANAGER.canWrite:
+            global_vars.TASTE_MANAGER.setRating(
+                curChild.getData(), int(curRating))
         ##########################
         global_vars.rating_index += 1
 
@@ -215,24 +276,15 @@ class MyLayout(TabbedPanel):
 # 1) Working on option to restart with 10 new random melodies
 # 2) Might add option to change instrument/octave/scale during genalgo
 
+
 class MainApp(App):
     def build(self):
-        if not os.path.exists("../support-files/req/melodies.sf2"):
-            print("Error: melodies.sf2 not found in correct directory.")
-            exit(1)
-
         self.title = "Melodies"
-
-        global_vars.MELODY_STACK = MelodyStack()
-        if global_vars.MELODY_STACK.numberOfFilledTracks() == 0:
-            MyLayout().clearStack()
-
-        global_vars.TASTE_MANAGER = Taste(open(
-            "../support-files/opt/taste.mel", "r+"))
-
         return MyLayout()
 
+
 if __name__ == '__main__':
+    melodiesSetup()
     MainApp().run()
     global_vars.TASTE_MANAGER.close()
 

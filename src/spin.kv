@@ -103,6 +103,10 @@
                 on_release: print("MIDI file written to out.mid!")
                 font_size: 32
             Button:
+                text: 'AutoPlay (EXPERIMENTAL)'
+                on_press: root.autoplay(spinner_key_id.text, spinner_scale_id.text, spinner_octave_id.text, input_bars_id.text, spinner_instrument_id.text)
+                font_size: 32
+            Button:
                 text: 'Replay Melody'
                 on_release: root.replay_melody()
                 font_size: 32
